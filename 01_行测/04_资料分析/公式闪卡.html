@@ -5,19 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>公式闪卡</title>
 <style>
-:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb}
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb;--amber:#8a5a00;--amber-bg:#fdf4e3}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
 .wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px}
 h1{font-size:22px;margin:0 0 6px}
 .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
-.bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px}
+.bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
 .bar b{color:var(--ink);font-variant-numeric:tabular-nums}
-.board{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:40px 28px;text-align:center;min-height:270px;display:flex;flex-direction:column;justify-content:center}
-.board .q{font-size:24px;font-weight:700;line-height:1.5}
+.board{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px 28px;text-align:center;min-height:300px;display:flex;flex-direction:column;justify-content:center}
 .board .tag{display:inline-block;font-size:11px;background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:1px 9px;margin-bottom:14px}
-.board .a{font-size:26px;font-weight:700;color:var(--green);margin-top:22px;font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.board .q{font-size:24px;font-weight:700;line-height:1.5}
+.board .a{font-size:27px;font-weight:700;color:var(--green);margin-top:20px;font-family:ui-monospace,Consolas,monospace;word-break:break-all}
 .board .a.hide{display:none}
+.board .g{font-size:14px;color:#444;margin-top:12px;background:#f3f2ee;border-radius:9px;padding:10px 14px;text-align:left;display:none}
+.board .g.on{display:block}
+.board .g b{color:var(--ink)}
 .board .note{font-size:13px;color:var(--muted);margin-top:14px}
 .actions{display:flex;gap:10px;margin-top:16px}
 button{border-radius:10px;padding:13px 18px;font:inherit;font-size:15px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
@@ -26,12 +29,12 @@ button.dark{background:var(--ink);color:#fff;border:0}
 button.ok{background:var(--green-bg);border-color:#bfe3cd;color:var(--green)}
 button.no{background:var(--red-bg);border-color:#f0c9c6;color:var(--red)}
 .hint{font-size:12.5px;color:var(--muted);margin-top:18px;text-align:center}
-.done{display:none}
-.done.on{display:block}
+.summary{display:none}
+.summary.on{display:block}
 .summary{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;margin-top:8px}
 .summary .big{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums}
 .summary .lab{color:var(--muted);font-size:13px}
-.rule{background:#fdf4e3;color:#8a5a00;border-radius:10px;padding:12px 14px;font-size:13px;margin-top:16px;text-align:left}
+.rule{background:var(--amber-bg);color:var(--amber);border-radius:10px;padding:12px 14px;font-size:13px;margin-top:16px;text-align:left}
 </style>
 </head>
 <body>
@@ -47,9 +50,10 @@ button.no{background:var(--red-bg);border-color:#f0c9c6;color:var(--red)}
   </div>
 
   <div class="board">
-    <div><span class="tag" id="tag">基期量</span></div>
+    <div><span class="tag" id="tag">基期</span></div>
     <div class="q" id="q">求基期量（增长型）</div>
-    <div class="a hide" id="a">12.8 ÷ (1+r)</div>
+    <div class="a hide" id="a">现期 ÷ (1 + r)</div>
+    <div class="g" id="g"></div>
     <div class="note" id="note">先自己想，再点揭晓</div>
   </div>
 
@@ -61,28 +65,40 @@ button.no{background:var(--red-bg);border-color:#f0c9c6;color:var(--red)}
     <button class="no wide" id="no">没记住</button>
   </div>
 
-  <div class="summary done" id="sum"></div>
+  <div class="summary" id="sum"></div>
 
   <p class="hint">12 张一轮。没记住的可以单独补练一轮，补练全对才算这张过关。</p>
 </div>
 
 <script>
 var CARDS = [
-  { q: "求基期量（增长型）", a: "现期 ÷ (1 + r)", tag: "基期" },
-  { q: "求基期量（下降型）", a: "现期 ÷ (1 − r)", tag: "基期" },
-  { q: "已知基期和增速，求现期", a: "基期 × (1 + r)", tag: "现期" },
-  { q: "求增长量", a: "现期 × r ÷ (1 + r)", tag: "增长量" },
-  { q: "求增长率", a: "增长量 ÷ 基期量", tag: "增长率" },
-  { q: "求比重", a: "部分 ÷ 整体", tag: "比重" },
-  { q: "判断比重升降", a: "比 部分增速 a 与 整体增速 b（a>b 升）", tag: "比重" },
-  { q: "求比重变化幅度", a: "现期比重 × (a − b) ÷ (1 + a)", tag: "比重" },
-  { q: "求平均数（户均/人均）", a: "总量 ÷ 个数", tag: "平均数" },
-  { q: "求平均数变化率", a: "(1 + a) ÷ (1 + b) − 1", tag: "平均数" },
-  { q: "A 是 B 的几倍", a: "A ÷ B", tag: "倍数" },
-  { q: "A 比 B 多百分之几", a: "(A − B) ÷ B", tag: "比较" }
+  { q: "求基期量（增长型）", a: "现期 ÷ (1 + r)", g: "<b>现期</b>＝材料给的本年数　<b>r</b>＝同比增长率", tag: "基期",
+    why: "增长是在基期上加了 r%，退回去要除，不能乘 (1−r)。" },
+  { q: "求基期量（下降型）", a: "现期 ÷ (1 − r)", g: "<b>下降</b>时括号里是减号，仍然是除", tag: "基期",
+    why: "看到「下降」就把乘号改成除号，符号跟着变成减。" },
+  { q: "已知基期和增速，求现期", a: "基期 × (1 + r)", g: "<b>基期</b>＝上年数　求今年用乘", tag: "现期",
+    why: "和第 1 张正好相反：给现期求基期用除，给基期求现期用乘。" },
+  { q: "求增长量", a: "现期 × r ÷ (1 + r)", g: "<b>现期</b>＝本年数　<b>r</b>＝增速　先乘 r 再除 (1+r)", tag: "增长量",
+    why: "现期 × r 只是「增长量占现期的比例」，不是增长量。" },
+  { q: "求增长率", a: "(现期 − 基期) ÷ 基期", g: "也等于 <b>现期 ÷ 基期 − 1</b>；材料直接给 r 时不用算", tag: "增长率",
+    why: "分母永远是基期，不是现期。写成 ÷ 现期 就变成「下降率」了。" },
+  { q: "求比重", a: "部分 ÷ 整体", g: "例：企业 4.2 万 ÷ 经营主体 12.8 万", tag: "比重",
+    why: "分子是那个部分，分母是它所在的那个整体，别把两个部分相除。" },
+  { q: "判断比重升降", a: "比 a 与 b", g: "<b>a</b>＝部分增速　<b>b</b>＝整体增速　a>b 升，a<b 降", tag: "比重",
+    why: "只看两个增速，一秒出结论，不用算任何量。" },
+  { q: "求比重变化幅度", a: "现期比重 × (a − b) ÷ (1 + a)", g: "结果单位是<b>百分点</b>，不是 %", tag: "比重",
+    why: "直接把 (a−b) 当答案是最常见的错法——增速差要乘现期比重才是百分点。" },
+  { q: "求平均数（户均/人均）", a: "总量 ÷ 个数", g: "户均＝罚没款÷案件数　人均＝收入÷人数", tag: "平均数",
+    why: "先想清楚「每什么」，分母就是那个「什么」。" },
+  { q: "求平均数变化率", a: "(1 + a) ÷ (1 + b) − 1", g: "<b>a</b>＝分子增速　<b>b</b>＝分母增速", tag: "平均数",
+    why: "绝不能 a − b。分子降 12.6%、分母升 8.5%，结果是降 19.4%，不是降 4.1%。" },
+  { q: "A 是 B 的几倍", a: "A ÷ B", g: "直接除，不减 1", tag: "倍数",
+    why: "「比 B 多几倍」才要减 1，这两个问法差一个 1。" },
+  { q: "A 比 B 多百分之几", a: "(A − B) ÷ B", g: "分母跟「<b>比</b>」字后面那个数走", tag: "比较",
+    why: "同一组数，「A 比 B 多」和「B 比 A 少」分母不同，答案也不同。" }
 ];
 
-var order = [], i = 0, ok = 0, bad = 0, revealed = false, t0 = 0, timer = null, wrongTags = [], wrongCards = [], rounds = 0;
+var order = [], i = 0, ok = 0, bad = 0, t0 = 0, timer = null, wrongTags = [], wrongCards = [];
 
 function el(id) { return document.getElementById(id); }
 function shuffle(a) {
@@ -102,44 +118,47 @@ function tick() { el("clock").textContent = fmt(Math.floor((Date.now() - t0) / 1
 function start(deck) {
   order = shuffle((deck || CARDS).slice());
   i = 0; ok = 0; bad = 0; wrongTags = []; wrongCards = [];
-  rounds++;
   t0 = Date.now();
   if (timer) clearInterval(timer);
   timer = setInterval(tick, 1000);
   el("sum").classList.remove("on");
-  el("act1").style.display = "flex";
-  el("act2").style.display = "none";
-  el("total").textContent = CARDS.length;
+  el("total").textContent = order.length;
   show();
 }
+
 function show() {
   var c = order[i];
-  revealed = false;
   el("tag").textContent = c.tag;
   el("q").textContent = c.q;
   el("a").textContent = c.a;
   el("a").classList.add("hide");
+  el("g").innerHTML = c.g;
+  el("g").classList.remove("on");
   el("note").textContent = "先自己想，再点揭晓";
   el("idx").textContent = i + 1;
   el("reveal").textContent = "揭晓式子";
   el("act1").style.display = "flex";
   el("act2").style.display = "none";
 }
+
 function reveal() {
-  revealed = !revealed;
-  el("a").classList.toggle("hide", !revealed);
-  el("act1").style.display = revealed ? "none" : "flex";
-  el("act2").style.display = revealed ? "flex" : "none";
-  if (revealed) el("note").textContent = "对上了吗？对上点左边，对不上点右边";
+  el("a").classList.remove("hide");
+  el("g").classList.add("on");
+  el("note").textContent = "对上了吗？对上点左边，对不上点右边";
+  el("act1").style.display = "none";
+  el("act2").style.display = "flex";
 }
+
 function next(isOk) {
-  if (isOk) { ok++; } else { bad++; wrongTags.push(order[i].tag + "：" + order[i].q); wrongCards.push(order[i]); }
+  if (isOk) { ok++; }
+  else { bad++; wrongTags.push(order[i].tag + "：" + order[i].q); wrongCards.push(order[i]); }
   el("okn").textContent = ok;
   el("badn").textContent = bad;
   i++;
   if (i >= order.length) { finish(); return; }
   show();
 }
+
 function finish() {
   clearInterval(timer);
   var sec = Math.floor((Date.now() - t0) / 1000);
@@ -147,13 +166,22 @@ function finish() {
   el("act2").style.display = "none";
   var s = el("sum");
   s.classList.add("on");
-  s.innerHTML = '<div class="lab">本轮</div><div class="big">' + ok + " / " + CARDS.length + "</div>" +
+  s.innerHTML = '<div class="lab">本轮</div><div class="big">' + ok + " / " + order.length + "</div>" +
     '<div class="lab">用时 ' + fmt(sec) + "</div>" +
-    (bad ? '<div class="rule">没记住的：' + wrongTags.join("；") + "</div>" : '<div class="rule">全对。隔 12 小时再来一轮，明天再一轮。</div>') +
-    (wrongCards.length ? '<div style="margin-top:10px"><button class="ok" onclick="start(wrongCards)">补练这 ' + wrongCards.length + ' 张</button></div>' : "") +
-    '<div style="margin-top:18px"><button class="dark" onclick="start()">再来一轮</button></div>';
-  postLog({ kind: "flash", set: "公式闪卡", score: ok, total: CARDS.length, sec: sec, wrong: wrongTags });
+    (bad ? '<div class="rule">' + wrongCards.map(function (c) {
+      return "<div style=\"margin-bottom:8px\"><b>" + c.q + "</b> → " + c.a + "<br><span style=\"opacity:.85\">" + (c.why || "") + "</span></div>";
+    }).join("") + "</div>"
+         : '<div class="rule">全对。隔 12 小时再来一轮，明天再一轮。</div>') +
+    (wrongCards.length ? '<div style="margin-top:10px"><button class="ok" id="retry">补练这 ' + wrongCards.length + " 张</button></div>" : "") +
+    '<div style="margin-top:10px"><button class="dark" id="again">再来一轮（全部 12 张）</button></div>';
+  if (wrongCards.length) {
+    var snapshot = wrongCards.slice();
+    el("retry").addEventListener("click", function () { start(snapshot); });
+  }
+  el("again").addEventListener("click", function () { start(); });
+  postLog({ kind: "flash", set: "公式闪卡", score: ok, total: order.length, sec: sec, wrong: wrongTags });
 }
+
 function postLog(obj) {
   try {
     if (location.protocol === "file:") return;
