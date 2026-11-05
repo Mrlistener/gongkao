@@ -12,6 +12,7 @@ def build(src_json: str, out_html: str) -> str:
     html = html.replace('__MATERIAL__', data.get('material', ''))
     html = html.replace('<section class="material" id="material">',
                         '<section class="material" id="material" data-set="' + data['title'] + '">')
+    html = html.replace('__WRONGBOOK__', data.get('wrongbook', '../错题集.html'))
     html = html.replace('__DATA__', json.dumps(data['questions'], ensure_ascii=False))
     out = pathlib.Path(out_html)
     out.parent.mkdir(parents=True, exist_ok=True)

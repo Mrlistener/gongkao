@@ -81,13 +81,15 @@ button.ghost{background:transparent;border:1px solid var(--line);border-radius:1
   <section class="history">
     <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
     <ul id="history"></ul>
-    <p class="hint">离线可用，答案只在本页判定，不会上传。</p>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。错题会自动记进 <a id="wbLink" href="../错题集.html">错题集</a>。</p>
   </section>
 </div>
 
 <script>
 const QUIZ = [{"stem": "2023 年，A 市新登记经营主体约为多少万户？", "options": ["11.9 万户", "12.0 万户", "12.1 万户", "13.7 万户"], "answer": 1, "type": "基期量", "solution": "<b>答案 B（12.0）。</b>12.8 ÷ 1.067 = 12.8 × (1 − 0.067 + 0.0045) ≈ 12.8 × 0.9375 = 12.0。<br><b>坑：</b>12.8 × (1 − 6.7%) = 11.94，正好落在选项 A。<br><b>规则：</b>求基期只能除；用 1/(1+r) ≈ 1 − r + r² 把除法换成乘法。"}, {"stem": "2024 年，A 市新登记企业数量比 2023 年约增加多少万户？", "options": ["0.43 万户", "0.48 万户", "0.53 万户", "0.62 万户"], "answer": 0, "type": "增长量", "solution": "<b>答案 A（0.43）。</b>增长量 = 现期 × r/(1+r) ≈ 4.2 × 0.114 × 0.886 ≈ 4.2 × 0.101 = 0.42（精确 0.43）。<br><b>坑：</b>4.2 × 11.4% = 0.48，就是选项 B。<br><b>规则：</b>r/(1+r) 是「r 打折」，永远小于 r 本身。"}, {"stem": "2024 年，A 市新登记经营主体中，企业所占比重与上年相比约：", "options": ["上升 1.4 个百分点", "上升 0.9 个百分点", "下降 1.4 个百分点", "下降 0.9 个百分点"], "answer": 0, "type": "比重变化", "solution": "<b>答案 A。</b>方向：企业增速 11.4% > 整体 6.7%，比重上升，先排除 C、D。幅度 ≈ 现期比重 × (a−b)/(1+a) = 32.8% × 4.7%/1.114 ≈ 32.8% × 4.22% ≈ 1.38 个百分点。<br><b>规则：</b>先比增速定方向，再用「现期比重 × 增速差」估幅度，不算两年绝对量。"}, {"stem": "2024 年，A 市市场监管部门户均罚没款同比约：", "options": ["下降 19%", "下降 16%", "上升 7%", "上升 19%"], "answer": 0, "type": "平均数变化", "solution": "<b>答案 A。</b>户均 = 罚没款 ÷ 案件数，平均数变化率 = (1 + a)/(1 + b) − 1 = 0.874 / 1.085 − 1 ≈ 0.806 − 1 = −19.4%。<br><b>坑：</b>12.6% − 8.5% = 4.1%，或 12.6% + 8.5% = 21%，都错。<br><b>规则：</b>平均数变化看两个增速的比值，不相减。"}, {"stem": "根据材料，下列说法正确的是：", "options": ["2024 年新登记个体工商户数量少于企业", "2024 年新登记经营主体中个体工商户占比超过六成", "2024 年查处的违法案件数比上年有所减少", "2024 年 12345 热线诉求量比上年有所增加"], "answer": 1, "type": "综合判断", "solution": "<b>答案 B。</b>A 错：8.6 > 4.2；B 对：8.6 ÷ 12.8 = 67.2% > 60%；C 错：案件数同比增长 8.5%；D 错：诉求量同比下降 3.1%。<br><b>规则：</b>四个选项各查一个数据，比而不算，30 秒内可判完，属于必拿分。"}, {"stem": "【加练】2024 年新登记企业中，数量增量更大的是：", "options": ["企业", "个体工商户", "两者相同", "无法判断"], "answer": 0, "type": "增量比较", "solution": "<b>答案 A（企业）。</b>企业增量 4.2 − 3.77 = 0.43；个体增量 8.6 − 8.23 = 0.37。<br><b>坑：</b>个体数量是企业两倍多，直觉上增量更大；但企业增速 11.4% 是个体 4.5% 的两倍半，增量反超。<br><b>规则：</b>比增量看「现期量 × 增速」，不看现期量本身。"}];
 const KEY = "kaogong_quiz_history_v1";
+const KEYW = "kaogong_wrong_v1";
+const WRONGBOOK = "../错题集.html";
 const el = function (id) { return document.getElementById(id); };
 const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
 
@@ -159,6 +161,7 @@ function submit() {
   el("submit").disabled = true;
   let right = 0;
   const wrong = [];
+  const wrongFull = [];
   QUIZ.forEach(function (q, qi) {
     const card = el("card-" + qi);
     const opts = card.querySelectorAll(".opt");
@@ -170,8 +173,11 @@ function submit() {
       if (i === mine && mine !== q.answer) opts[i].classList.add("no");
     }
     const ok = mine === q.answer;
-    if (ok) right++;
-    else wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+    if (ok) { right++; }
+    else {
+      wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+      wrongFull.push({ stem: q.stem, options: q.options, mine: mine, answer: q.answer, type: q.type, solution: q.solution });
+    }
     const tag = document.createElement("span");
     tag.className = "tag " + (ok ? "ok" : "no");
     tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
@@ -195,8 +201,34 @@ function submit() {
   }
   res.innerHTML = html;
   save(sec, right);
+  saveWrong(wrongFull);
   res.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+function saveWrong(items) {
+  if (!items.length) return;
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEYW) || "[]");
+    const set = el("material").dataset.set || document.title;
+    items.forEach(function (it) {
+      const id = set + "|" + it.stem;
+      const found = arr.filter(function (x) { return x.id === id; })[0];
+      const rec = {
+        id: id, set: set, stem: it.stem, options: it.options, mine: it.mine,
+        answer: it.answer, type: it.type, solution: it.solution,
+        at: new Date().toLocaleString("zh-CN"), times: 1
+      };
+      if (found) {
+        found.times = (found.times || 1) + 1;
+        found.mine = it.mine;
+        found.at = rec.at;
+      } else {
+        arr.push(rec);
+      }
+    });
+    localStorage.setItem(KEYW, JSON.stringify(arr.slice(-200)));
+  } catch (e) {}
+}
+
 function save(sec, right) {
   try {
     const arr = JSON.parse(localStorage.getItem(KEY) || "[]");

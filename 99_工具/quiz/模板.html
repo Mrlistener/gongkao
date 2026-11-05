@@ -81,13 +81,15 @@ button.ghost{background:transparent;border:1px solid var(--line);border-radius:1
   <section class="history">
     <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
     <ul id="history"></ul>
-    <p class="hint">离线可用，答案只在本页判定，不会上传。</p>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。错题会自动记进 <a id="wbLink" href="__WRONGBOOK__">错题集</a>。</p>
   </section>
 </div>
 
 <script>
 const QUIZ = __DATA__;
 const KEY = "kaogong_quiz_history_v1";
+const KEYW = "kaogong_wrong_v1";
+const WRONGBOOK = "__WRONGBOOK__";
 const el = function (id) { return document.getElementById(id); };
 const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
 
@@ -159,6 +161,7 @@ function submit() {
   el("submit").disabled = true;
   let right = 0;
   const wrong = [];
+  const wrongFull = [];
   QUIZ.forEach(function (q, qi) {
     const card = el("card-" + qi);
     const opts = card.querySelectorAll(".opt");
@@ -170,8 +173,11 @@ function submit() {
       if (i === mine && mine !== q.answer) opts[i].classList.add("no");
     }
     const ok = mine === q.answer;
-    if (ok) right++;
-    else wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+    if (ok) { right++; }
+    else {
+      wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+      wrongFull.push({ stem: q.stem, options: q.options, mine: mine, answer: q.answer, type: q.type, solution: q.solution });
+    }
     const tag = document.createElement("span");
     tag.className = "tag " + (ok ? "ok" : "no");
     tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
@@ -195,8 +201,34 @@ function submit() {
   }
   res.innerHTML = html;
   save(sec, right);
+  saveWrong(wrongFull);
   res.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+function saveWrong(items) {
+  if (!items.length) return;
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEYW) || "[]");
+    const set = el("material").dataset.set || document.title;
+    items.forEach(function (it) {
+      const id = set + "|" + it.stem;
+      const found = arr.filter(function (x) { return x.id === id; })[0];
+      const rec = {
+        id: id, set: set, stem: it.stem, options: it.options, mine: it.mine,
+        answer: it.answer, type: it.type, solution: it.solution,
+        at: new Date().toLocaleString("zh-CN"), times: 1
+      };
+      if (found) {
+        found.times = (found.times || 1) + 1;
+        found.mine = it.mine;
+        found.at = rec.at;
+      } else {
+        arr.push(rec);
+      }
+    });
+    localStorage.setItem(KEYW, JSON.stringify(arr.slice(-200)));
+  } catch (e) {}
+}
+
 function save(sec, right) {
   try {
     const arr = JSON.parse(localStorage.getItem(KEY) || "[]");

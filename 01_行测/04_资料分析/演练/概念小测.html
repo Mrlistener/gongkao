@@ -81,13 +81,15 @@ button.ghost{background:transparent;border:1px solid var(--line);border-radius:1
   <section class="history">
     <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
     <ul id="history"></ul>
-    <p class="hint">离线可用，答案只在本页判定，不会上传。</p>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。错题会自动记进 <a id="wbLink" href="../错题集.html">错题集</a>。</p>
   </section>
 </div>
 
 <script>
 const QUIZ = [{"stem": "2023 年，A 市新登记经营主体约为多少万户？", "options": ["现期量", "增长量", "基期量", "增长率"], "answer": 2, "type": "基期量", "solution": "<b>基期量。</b>问的是「上一年是多少」，也就是对比基准那一期的量。<br>公式：基期量 = 现期量 ÷ (1 + 增长率) = 12.8 ÷ 1.067。<br>看到「上年 / 去年 / 与……相比的基准年是」，就是求基期。"}, {"stem": "2024 年新登记企业比 2023 年多多少万户？", "options": ["增长率", "增长量", "比重", "平均数"], "answer": 1, "type": "增长量", "solution": "<b>增长量。</b>单位是「万户」，是绝对数，不是百分比。<br>公式：增长量 = 现期 × r/(1+r)。<br>判断诀窍：问句里带具体单位（万户、亿元、件），就是量；带「百分之几」，才是率。"}, {"stem": "2024 年市场监管部门罚没款比上年下降了几个百分点？", "options": ["比重变化", "平均数变化", "增长量", "增长率"], "answer": 3, "type": "增长率", "solution": "<b>增长率（原题表述不规范）。</b>主语是「罚没款」，一个带单位的量，量不可能用「百分点」描述。<br>「百分点」只能用于两个百分数相减（比如比重从 31.4% 到 32.8%）。<br>读题先问一句：<b>这句话的主语，是量还是率？</b>"}, {"stem": "2024 年新登记经营主体中，企业占比约多少？", "options": ["比重", "比重变化", "倍数", "平均数"], "answer": 0, "type": "比重", "solution": "<b>比重。</b>部分 ÷ 整体 = 4.2 ÷ 12.8 = 32.8%。<br>问「占比 / 构成 / 比例」，都是比重。"}, {"stem": "与 2023 年相比，2024 年户均罚没款下降约百分之几？", "options": ["增长率", "平均数", "平均数变化", "比重变化"], "answer": 2, "type": "平均数变化", "solution": "<b>平均数变化。</b>「户均」= 罚没款 ÷ 案件数，是一个平均数；问它比上年变化多少，就是平均数变化。<br>公式：(1 + 分子增速) ÷ (1 + 分母增速) − 1，<b>不是把两个增速相减</b>。"}, {"stem": "2024 年新登记个体工商户约是企业数量的多少倍？", "options": ["比重", "倍数", "平均数", "增长率"], "answer": 1, "type": "倍数", "solution": "<b>倍数。</b>8.6 ÷ 4.2 ≈ 2 倍。<br>注意区分：「是 n 倍」用除法直接得 n；「比……多 n 倍」要减 1。"}, {"stem": "2024 年查处的违法案件数比上年增长约百分之几？", "options": ["增长率", "增长量", "基期量", "比重"], "answer": 0, "type": "增长率", "solution": "<b>增长率。</b>问「百分之几」，而且主语是量，比较的是两个时期同一个指标，所以是增长率 8.5%（材料已给）。<br>如果问「增长了多少件」，那才是增长量。"}, {"stem": "2024 年新登记经营主体中企业所占比重，比上年上升还是下降？", "options": ["比重", "增长率", "平均数变化", "比重变化"], "answer": 3, "type": "比重变化", "solution": "<b>比重变化（只问方向）。</b>企业增速 11.4% > 整体增速 6.7% → 比重上升。<br>方向不用算，比两个增速就够了；只有问「几个百分点」才需要估幅度。"}];
 const KEY = "kaogong_quiz_history_v1";
+const KEYW = "kaogong_wrong_v1";
+const WRONGBOOK = "../错题集.html";
 const el = function (id) { return document.getElementById(id); };
 const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
 
@@ -159,6 +161,7 @@ function submit() {
   el("submit").disabled = true;
   let right = 0;
   const wrong = [];
+  const wrongFull = [];
   QUIZ.forEach(function (q, qi) {
     const card = el("card-" + qi);
     const opts = card.querySelectorAll(".opt");
@@ -170,8 +173,11 @@ function submit() {
       if (i === mine && mine !== q.answer) opts[i].classList.add("no");
     }
     const ok = mine === q.answer;
-    if (ok) right++;
-    else wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+    if (ok) { right++; }
+    else {
+      wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+      wrongFull.push({ stem: q.stem, options: q.options, mine: mine, answer: q.answer, type: q.type, solution: q.solution });
+    }
     const tag = document.createElement("span");
     tag.className = "tag " + (ok ? "ok" : "no");
     tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
@@ -195,8 +201,34 @@ function submit() {
   }
   res.innerHTML = html;
   save(sec, right);
+  saveWrong(wrongFull);
   res.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+function saveWrong(items) {
+  if (!items.length) return;
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEYW) || "[]");
+    const set = el("material").dataset.set || document.title;
+    items.forEach(function (it) {
+      const id = set + "|" + it.stem;
+      const found = arr.filter(function (x) { return x.id === id; })[0];
+      const rec = {
+        id: id, set: set, stem: it.stem, options: it.options, mine: it.mine,
+        answer: it.answer, type: it.type, solution: it.solution,
+        at: new Date().toLocaleString("zh-CN"), times: 1
+      };
+      if (found) {
+        found.times = (found.times || 1) + 1;
+        found.mine = it.mine;
+        found.at = rec.at;
+      } else {
+        arr.push(rec);
+      }
+    });
+    localStorage.setItem(KEYW, JSON.stringify(arr.slice(-200)));
+  } catch (e) {}
+}
+
 function save(sec, right) {
   try {
     const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
