@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>资料分析 · 概念与必背表</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--blue:#1f5fbf;--blue-bg:#eaf1fb;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--amber:#8a5a00;--amber-bg:#fdf4e3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 90px}
+h1{font-size:22px;margin:0 0 6px}
+.sub{margin:0 0 20px;color:var(--muted);font-size:14px}
+.tabs{display:flex;gap:6px;margin-bottom:20px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;position:sticky;top:8px;z-index:9}
+.tabs button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;padding:9px 6px;border-radius:8px;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff}
+section.tab{display:none}
+section.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.card h2{font-size:16px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.card h2 .n{font-size:12px;font-weight:500;color:#fff;background:var(--ink);border-radius:999px;padding:1px 8px}
+.card p{margin:6px 0;font-size:14.5px}
+.f{display:block;background:#f3f2ee;border-left:3px solid var(--ink);border-radius:6px;padding:9px 12px;margin:10px 0;font-family:ui-monospace,Consolas,monospace;font-size:13.5px;white-space:pre-wrap;word-break:break-word}
+.pit{background:var(--red-bg);border-radius:8px;padding:9px 12px;font-size:13.5px;margin-top:8px}
+.pit b{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f3f2ee;font-weight:600;font-size:13px;color:#444}
+tr:last-child td{border-bottom:0}
+td.num{font-family:ui-monospace,Consolas,monospace;text-align:right;white-space:nowrap}
+.masked td.num{color:transparent;position:relative}
+.masked td.num::after{content:"？";color:#bbb;position:absolute;right:12px;top:9px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+button.ghost{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 14px;font:inherit;font-size:13.5px;color:var(--ink);cursor:pointer}
+button.ghost:hover{border-color:#c9c5bd}
+button.dark{background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 16px;font:inherit;font-size:14px;cursor:pointer}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+.tagline{display:inline-block;font-size:12px;background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:1px 9px;margin-left:6px}
+.drill{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center}
+.drill .r{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.drill .q{color:var(--muted);font-size:14px;margin-bottom:18px}
+.drill .answers{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.drill .ans{background:#f3f2ee;border-radius:10px;padding:14px 18px;min-width:170px}
+.drill .ans .lab{font-size:12px;color:var(--muted)}
+.drill .ans .val{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px}
+.drill .ans.hidden .val{color:transparent;background:#e9e7e1;border-radius:6px}
+.drill .ans .val{position:relative}
+.scorebar{display:flex;gap:18px;justify-content:center;font-size:13px;color:var(--muted);margin-top:18px}
+.scorebar b{color:var(--ink);font-variant-numeric:tabular-nums}
+.tip{background:var(--amber-bg);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--amber);margin-top:14px;text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>资料分析 · 概念与必背表</h1>
+  <p class="sub">四个页签：概念速查、问法对照、必背表、随机抽背。离线可用。</p>
+
+  <nav class="tabs" id="tabs">
+    <button data-t="0" class="on">概念速查</button>
+    <button data-t="1">问法对照</button>
+    <button data-t="2">必背表</button>
+    <button data-t="3">随机抽背</button>
+  </nav>
+
+  <section class="tab on" id="tab0">
+    <div class="card">
+      <h2><span class="n">1</span>现期与基期</h2>
+      <p>材料正在说的那一年是<b>现期</b>；用来对比的基准期是<b>基期</b>。</p>
+      <p class="f">基期量 = 现期量 ÷ (1 + r)
+现期量 = 基期量 × (1 + r)
+增长量 = 现期量 − 基期量 = 基期量 × r</p>
+      <div class="pit"><b>坑：</b>基期量 ≠ 现期量 × (1 − r)。增长是在基期上加了 r%，退回去要除，不能乘。</div>
+      <p class="hint">基期不一定是「去年」。问「2022 年比 2020 年」，基期是 2020 年。</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">2</span>增长率（率，带 %）</h2>
+      <p>增长量 ÷ 基期量。问法：增速、增幅、增长百分之几、同比增长。</p>
+      <p class="f">增长率 = 增长量 ÷ 基期量 = 现期 ÷ 基期 − 1</p>
+      <p class="hint">「增长最快」比的是率；「增长最多」比的是量。</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">3</span>增长量（量，带单位）</h2>
+      <p>现期减基期的差，单位与材料一致（万户、亿元、件）。</p>
+      <p class="f">增长量 = 现期 × r ÷ (1 + r) = 现期 × r/(1+r)</p>
+      <div class="pit"><b>坑：</b>现期 × r 不是增长量，而是「如果增长量占现期的比例」。r = 11.4% 时，r/(1+r) 只有 10.2%。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">4</span>比重</h2>
+      <p>部分占整体。问法：占比、构成、比例。</p>
+      <p class="f">比重 = 部分量 ÷ 整体量 × 100%</p>
+      <p class="hint">方向判断题：部分增速 > 整体增速 → 比重上升。</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">5</span>比重变化</h2>
+      <p>两年比重之差，单位是「百分点」。</p>
+      <p class="f">方向：比 部分增速 a 与 整体增速 b
+幅度 ≈ 现期比重 × (a − b) ÷ (1 + a)</p>
+      <div class="pit"><b>坑：</b>先算两年绝对比重再相减，容易在基期比重上算错。用上面的近似式一步到位。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">6</span>平均数</h2>
+      <p>总量除以个数。别名：人均、户均、亩产、单位面积产量、日均、单件。</p>
+      <p class="f">平均数 = 总量 ÷ 个数</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">7</span>平均数变化</h2>
+      <p>分子分母都在变时，平均数的变化率。</p>
+      <p class="f">平均数变化 = (1 + a) ÷ (1 + b) − 1
+（a = 分子增速，b = 分母增速）</p>
+      <div class="pit"><b>坑：</b>绝不能用 a − b。分子降 12.6%、分母升 8.5%，平均数不是降 4.1%，而是降 19.4%。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">8</span>倍数与翻番</h2>
+      <p class="f">是 n 倍：A ÷ B = n
+比 B 多 n 倍：A ÷ B = n + 1
+翻一番 = 2 倍，翻两番 = 4 倍</p>
+      <div class="pit"><b>坑：</b>「增长了 n 倍」与「是 n 倍」差一个 1。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">9</span>百分数 vs 百分点</h2>
+      <p>百分数：相对变化，带 %。百分点：两个百分数相减的差，不带 %。</p>
+      <p class="f">率 − 率 → 百分点
+量 − 量 → 原单位
+率 ÷ 率 → 倍数</p>
+      <p class="hint">读题先问：这句话的主语，是量还是率？</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">10</span>同比与环比</h2>
+      <p>同比：与去年同期比。环比：与上一个相邻期比。</p>
+      <p class="hint">年度数据只有同比；月度、季度数据才可能出现环比。</p>
+    </div>
+  </section>
+
+  <section class="tab" id="tab1">
+    <table>
+      <tr><th>题目问法</th><th>求什么</th><th>公式</th></tr>
+      <tr><td>上年 / 去年是多少</td><td>基期量</td><td class="num">现期 ÷ (1+r)</td></tr>
+      <tr><td>增长了多少（带单位）</td><td>增长量</td><td class="num">现期 × r/(1+r)</td></tr>
+      <tr><td>增长了百分之几</td><td>增长率</td><td class="num">增长量 ÷ 基期</td></tr>
+      <tr><td>占比多少</td><td>比重</td><td class="num">部分 ÷ 整体</td></tr>
+      <tr><td>占比上升还是下降</td><td>比重变化方向</td><td class="num">比 a 与 b</td></tr>
+      <tr><td>占比变化几个百分点</td><td>比重变化幅度</td><td class="num">比重 ×(a−b)/(1+a)</td></tr>
+      <tr><td>平均每个多少</td><td>平均数</td><td class="num">总量 ÷ 个数</td></tr>
+      <tr><td>平均数比上年高还是低</td><td>平均数变化</td><td class="num">(1+a)/(1+b) − 1</td></tr>
+      <tr><td>是几倍 / 多几倍</td><td>倍数</td><td class="num">A÷B / A÷B−1</td></tr>
+      <tr><td>增长最快 / 增长最多</td><td>率 / 量</td><td class="num">比增速 / 比增量</td></tr>
+    </table>
+    <p class="hint">这张表是「读题翻译器」。做错的题，先回这里对一遍问法，多半是翻译错了，不是不会算。</p>
+  </section>
+
+  <section class="tab" id="tab2">
+    <div class="toolbar">
+      <button class="ghost" id="maskBtn">遮住答案</button>
+      <span class="hint" id="maskHint">先遮住，默写一遍，再点开核对。</span>
+    </div>
+    <table id="btable">
+      <tr><th>r</th><th class="num">1/(1+r) 求基期</th><th class="num">r/(1+r) 求增长量</th></tr>
+      <tr><td>5%</td><td class="num">0.952</td><td class="num">4.76%</td></tr>
+      <tr><td>8%</td><td class="num">0.926</td><td class="num">7.41%</td></tr>
+      <tr><td>10%</td><td class="num">0.909</td><td class="num">9.09%</td></tr>
+      <tr><td>12%</td><td class="num">0.893</td><td class="num">10.71%</td></tr>
+      <tr><td>15%</td><td class="num">0.870</td><td class="num">13.04%</td></tr>
+      <tr><td>20%</td><td class="num">0.833</td><td class="num">16.67%</td></tr>
+      <tr><td>25%</td><td class="num">0.800</td><td class="num">20.00%</td></tr>
+      <tr><td>30%</td><td class="num">0.769</td><td class="num">23.08%</td></tr>
+    </table>
+    <div class="tip">
+      <b>怎么用：</b>r 落在表里，直接查。落在两行之间，线性插值——如 6.7% 在 5% 与 8% 之间，1/(1+r) ≈ 0.952 − (1.7/3)×0.026 ≈ 0.937。<br>
+      <b>记不住表时：</b>1/(1+r) ≈ 1 − r + r²；r/(1+r) ≈ r×(1−r)。这两个式子推出来的数和表几乎一样。
+    </div>
+  </section>
+
+  <section class="tab" id="tab3">
+    <div class="drill">
+      <div class="q">随机抽一个增长率，先自己说数，再揭晓</div>
+      <div class="r" id="dr">12%</div>
+      <div class="q">r = <span id="drtxt">12%</span> 时，下面两个系数是多少？</div>
+      <div class="answers">
+        <div class="ans hidden" id="a1"><div class="lab">1 / (1+r)　求基期</div><div class="val" id="v1">0.893</div></div>
+        <div class="ans hidden" id="a2"><div class="lab">r / (1+r)　求增长量</div><div class="val" id="v2">10.71%</div></div>
+      </div>
+      <div class="toolbar" style="justify-content:center;margin-top:6px">
+        <button class="dark" id="reveal">揭晓</button>
+        <button class="ghost" id="next">换一个</button>
+      </div>
+      <div class="toolbar" style="justify-content:center;margin-top:2px">
+        <button class="ghost" id="ok">说对了</button>
+        <button class="ghost" id="bad">说错了</button>
+      </div>
+      <div class="scorebar">
+        <span>对 <b id="cntOk">0</b></span>
+        <span>错 <b id="cntBad">0</b></span>
+        <span>正确率 <b id="rate">—</b></span>
+      </div>
+      <div class="tip" style="margin-top:16px">标准：看到 r 的三秒内说出两个系数。说对了就换下一个，说错了就把这一行手写三遍。</div>
+    </div>
+  </section>
+</div>
+
+<script>
+var DATA = [
+  { r: "5%", inv: "0.952", gr: "4.76%" },
+  { r: "8%", inv: "0.926", gr: "7.41%" },
+  { r: "10%", inv: "0.909", gr: "9.09%" },
+  { r: "12%", inv: "0.893", gr: "10.71%" },
+  { r: "15%", inv: "0.870", gr: "13.04%" },
+  { r: "20%", inv: "0.833", gr: "16.67%" },
+  { r: "25%", inv: "0.800", gr: "20.00%" },
+  { r: "30%", inv: "0.769", gr: "23.08%" }
+];
+var EXTRA = [
+  { r: "6.7%", inv: "0.937", gr: "6.28%" },
+  { r: "11.4%", inv: "0.898", gr: "10.23%" },
+  { r: "4.5%", inv: "0.957", gr: "4.31%" },
+  { r: "8.5%", inv: "0.922", gr: "7.83%" }
+];
+
+function el(id) { return document.getElementById(id); }
+
+document.getElementById("tabs").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (!b) return;
+  var btns = document.querySelectorAll("#tabs button");
+  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove("on"); }
+  b.classList.add("on");
+  for (var j = 0; j < 4; j++) { el("tab" + j).classList.remove("on"); }
+  el("tab" + b.dataset.t).classList.add("on");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+var masked = false;
+el("maskBtn").addEventListener("click", function () {
+  masked = !masked;
+  el("btable").classList.toggle("masked", masked);
+  el("maskBtn").textContent = masked ? "显示答案" : "遮住答案";
+});
+
+var cur = null, ok = 0, bad = 0, revealed = false;
+
+function pool() { return DATA.concat(EXTRA); }
+
+function pick() {
+  var p = pool();
+  var n = cur;
+  while (n === cur) { n = p[Math.floor(Math.random() * p.length)]; }
+  cur = n;
+  revealed = false;
+  el("drtxt").textContent = cur.r;
+  el("dr").textContent = cur.r;
+  el("v1").textContent = cur.inv;
+  el("v2").textContent = cur.gr;
+  el("a1").classList.add("hidden");
+  el("a2").classList.add("hidden");
+  el("reveal").textContent = "揭晓";
+}
+
+el("reveal").addEventListener("click", function () {
+  revealed = !revealed;
+  el("a1").classList.toggle("hidden", !revealed);
+  el("a2").classList.toggle("hidden", !revealed);
+  el("reveal").textContent = revealed ? "再遮住" : "揭晓";
+});
+
+el("next").addEventListener("click", pick);
+
+el("ok").addEventListener("click", function () { ok++; render(); pick(); });
+el("bad").addEventListener("click", function () { bad++; render(); pick(); });
+
+function render() {
+  el("cntOk").textContent = ok;
+  el("cntBad").textContent = bad;
+  var t = ok + bad;
+  el("rate").textContent = t ? Math.round(ok * 100 / t) + "%" : "—";
+}
+
+pick();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>资料分析 · 概念判别小测</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--blue:#1f5fbf;--blue-bg:#eaf1fb;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:28px 20px 80px}
+header h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.hud{display:flex;gap:18px;align-items:center;margin:16px 0 22px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:14px;position:sticky;top:8px;z-index:9}
+.hud .t{font-variant-numeric:tabular-nums;font-weight:600;font-size:17px;letter-spacing:1px}
+.hud .grow{flex:1}
+.hud .p{color:var(--muted)}
+.material{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:15px;margin-bottom:18px}
+.material p{margin:0 0 10px}
+.material p:last-child{margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 18px;margin-bottom:14px}
+.stem{font-size:15px;margin:0 0 12px;font-weight:600}
+.stem .no{display:inline-block;min-width:22px;color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:#fbfbfa;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:7px 0;font:inherit;font-size:14.5px;color:inherit;cursor:pointer;transition:border-color .12s,background .12s}
+.opt:hover{border-color:#c9c5bd}
+.opt .k{flex:none;width:20px;color:var(--muted);font-weight:600}
+.opt.sel{border-color:var(--blue);background:var(--blue-bg)}
+.opt.ok{border-color:var(--green);background:var(--green-bg)}
+.opt.no{border-color:var(--red);background:var(--red-bg)}
+.opt.lock{cursor:default}
+.opt.lock:hover{border-color:var(--line)}
+.opt.ok.lock:hover{border-color:var(--green)}
+.opt.no.lock:hover{border-color:var(--red)}
+.sol{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;color:#333}
+.sol.show{display:block}
+.sol b{color:var(--ink)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;margin-left:8px;vertical-align:2px}
+.tag.ok{background:var(--green-bg);color:var(--green)}
+.tag.no{background:var(--red-bg);color:var(--red)}
+.actions{display:flex;gap:10px;margin:22px 0 8px}
+button.primary{flex:1;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:13px;font:inherit;font-size:15px;cursor:pointer}
+button.primary:disabled{opacity:.35;cursor:not-allowed}
+button.ghost{background:transparent;border:1px solid var(--line);border-radius:10px;padding:13px 18px;font:inherit;font-size:15px;color:var(--muted);cursor:pointer}
+.result{display:none;margin-top:16px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.result.show{display:block}
+.result .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.result .row{display:flex;gap:24px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px}
+.result .lab{color:var(--muted);font-size:13px}
+.wronglist{margin:6px 0 0;padding-left:18px;font-size:14px;color:#444}
+.history{margin-top:34px;border-top:1px solid var(--line);padding-top:16px}
+.history h3{font-size:14px;color:var(--muted);font-weight:500;margin:0 0 8px}
+.history ul{list-style:none;margin:0;padding:0;font-size:13px;color:var(--muted)}
+.history li{display:flex;gap:12px;padding:5px 0;border-bottom:1px dotted #ececea;font-variant-numeric:tabular-nums}
+.history li span:first-child{flex:1}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>资料分析 · 概念判别小测</h1>
+    <p class="sub">8 题 · 只判断「求什么」，不用算 · 建议 4 分钟</p>
+  </header>
+
+  <div class="hud">
+    <div class="t" id="timer">00:00</div>
+    <div class="grow p" id="progress">已答 0 / 0</div>
+    <div class="p" id="hintbar">计时中</div>
+  </div>
+
+  <section class="material" id="material" data-set="资料分析 · 概念判别小测"><p>这 8 句话都和下面这份材料有关，但 <b>不需要你计算任何数字</b>。你只需要判断：这句话问的是哪一个概念。</p><p>材料：2024 年，A 市新登记经营主体 12.8 万户，同比增长 6.7%。其中企业 4.2 万户，同比增长 11.4%；个体工商户 8.6 万户，同比增长 4.5%。2024 年查处违法案件 2.16 万件，同比增长 8.5%；罚没款 1.32 亿元，同比下降 12.6%。</p></section>
+  <main id="questions"></main>
+
+  <div class="actions">
+    <button class="primary" id="submit" disabled>交卷</button>
+    <button class="ghost" id="reset">重做</button>
+  </div>
+
+  <section class="result" id="result"></section>
+
+  <section class="history">
+    <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
+    <ul id="history"></ul>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。</p>
+  </section>
+</div>
+
+<script>
+const QUIZ = [{"stem": "2023 年，A 市新登记经营主体约为多少万户？", "options": ["现期量", "增长量", "基期量", "增长率"], "answer": 2, "type": "基期量", "solution": "<b>基期量。</b>问的是「上一年是多少」，也就是对比基准那一期的量。<br>公式：基期量 = 现期量 ÷ (1 + 增长率) = 12.8 ÷ 1.067。<br>看到「上年 / 去年 / 与……相比的基准年是」，就是求基期。"}, {"stem": "2024 年新登记企业比 2023 年多多少万户？", "options": ["增长率", "增长量", "比重", "平均数"], "answer": 1, "type": "增长量", "solution": "<b>增长量。</b>单位是「万户」，是绝对数，不是百分比。<br>公式：增长量 = 现期 × r/(1+r)。<br>判断诀窍：问句里带具体单位（万户、亿元、件），就是量；带「百分之几」，才是率。"}, {"stem": "2024 年市场监管部门罚没款比上年下降了几个百分点？", "options": ["比重变化", "平均数变化", "增长量", "增长率"], "answer": 3, "type": "增长率", "solution": "<b>增长率（原题表述不规范）。</b>主语是「罚没款」，一个带单位的量，量不可能用「百分点」描述。<br>「百分点」只能用于两个百分数相减（比如比重从 31.4% 到 32.8%）。<br>读题先问一句：<b>这句话的主语，是量还是率？</b>"}, {"stem": "2024 年新登记经营主体中，企业占比约多少？", "options": ["比重", "比重变化", "倍数", "平均数"], "answer": 0, "type": "比重", "solution": "<b>比重。</b>部分 ÷ 整体 = 4.2 ÷ 12.8 = 32.8%。<br>问「占比 / 构成 / 比例」，都是比重。"}, {"stem": "与 2023 年相比，2024 年户均罚没款下降约百分之几？", "options": ["增长率", "平均数", "平均数变化", "比重变化"], "answer": 2, "type": "平均数变化", "solution": "<b>平均数变化。</b>「户均」= 罚没款 ÷ 案件数，是一个平均数；问它比上年变化多少，就是平均数变化。<br>公式：(1 + 分子增速) ÷ (1 + 分母增速) − 1，<b>不是把两个增速相减</b>。"}, {"stem": "2024 年新登记个体工商户约是企业数量的多少倍？", "options": ["比重", "倍数", "平均数", "增长率"], "answer": 1, "type": "倍数", "solution": "<b>倍数。</b>8.6 ÷ 4.2 ≈ 2 倍。<br>注意区分：「是 n 倍」用除法直接得 n；「比……多 n 倍」要减 1。"}, {"stem": "2024 年查处的违法案件数比上年增长约百分之几？", "options": ["增长率", "增长量", "基期量", "比重"], "answer": 0, "type": "增长率", "solution": "<b>增长率。</b>问「百分之几」，而且主语是量，比较的是两个时期同一个指标，所以是增长率 8.5%（材料已给）。<br>如果问「增长了多少件」，那才是增长量。"}, {"stem": "2024 年新登记经营主体中企业所占比重，比上年上升还是下降？", "options": ["比重", "增长率", "平均数变化", "比重变化"], "answer": 3, "type": "比重变化", "solution": "<b>比重变化（只问方向）。</b>企业增速 11.4% > 整体增速 6.7% → 比重上升。<br>方向不用算，比两个增速就够了；只有问「几个百分点」才需要估幅度。"}];
+const KEY = "kaogong_quiz_history_v1";
+const el = function (id) { return document.getElementById(id); };
+const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
+
+function fmt(sec) {
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return m + ":" + s;
+}
+function elapsed() { return Math.floor((Date.now() - st.start) / 1000); }
+function tick() {
+  if (st.submitted) return;
+  el("timer").textContent = fmt(elapsed());
+}
+function answeredCount() { return Object.keys(st.answers).length; }
+function updateHud() {
+  el("progress").textContent = "已答 " + answeredCount() + " / " + QUIZ.length;
+  el("submit").disabled = answeredCount() === 0;
+  const n = answeredCount();
+  el("hintbar").textContent = n === QUIZ.length ? "可以交卷了" : (n === 0 ? "计时中" : "还有 " + (QUIZ.length - n) + " 题");
+}
+function render() {
+  const box = el("questions");
+  QUIZ.forEach(function (q, qi) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = "card-" + qi;
+    const stem = document.createElement("p");
+    stem.className = "stem";
+    stem.innerHTML = '<span class="no">' + (qi + 1) + '.</span>' + q.stem;
+    card.appendChild(stem);
+    q.options.forEach(function (text, oi) {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.type = "button";
+      b.dataset.q = qi;
+      b.dataset.o = oi;
+      b.innerHTML = '<span class="k">' + "ABCD"[oi] + '</span><span class="t">' + text + '</span>';
+      b.addEventListener("click", function () { pick(qi, oi); });
+      card.appendChild(b);
+    });
+    const sol = document.createElement("div");
+    sol.className = "sol";
+    sol.id = "sol-" + qi;
+    sol.innerHTML = q.solution;
+    card.appendChild(sol);
+    box.appendChild(card);
+  });
+  updateHud();
+}
+function pick(qi, oi) {
+  if (st.submitted) return;
+  st.answers[qi] = oi;
+  const card = el("card-" + qi);
+  const opts = card.querySelectorAll(".opt");
+  for (let i = 0; i < opts.length; i++) {
+    opts[i].classList.toggle("sel", i === oi);
+  }
+  updateHud();
+}
+function submit() {
+  if (st.submitted) return;
+  if (answeredCount() < QUIZ.length) {
+    const left = QUIZ.length - answeredCount();
+    if (!confirm("还有 " + left + " 题没答，确定交卷？")) return;
+  }
+  st.submitted = true;
+  clearInterval(st.timer);
+  el("hintbar").textContent = "已交卷";
+  el("submit").disabled = true;
+  let right = 0;
+  const wrong = [];
+  QUIZ.forEach(function (q, qi) {
+    const card = el("card-" + qi);
+    const opts = card.querySelectorAll(".opt");
+    const mine = st.answers[qi];
+    for (let i = 0; i < opts.length; i++) {
+      opts[i].classList.add("lock");
+      opts[i].classList.remove("sel");
+      if (i === q.answer) opts[i].classList.add("ok");
+      if (i === mine && mine !== q.answer) opts[i].classList.add("no");
+    }
+    const ok = mine === q.answer;
+    if (ok) right++;
+    else wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+    const tag = document.createElement("span");
+    tag.className = "tag " + (ok ? "ok" : "no");
+    tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
+    card.querySelector(".stem").appendChild(tag);
+    el("sol-" + qi).classList.add("show");
+  });
+  const sec = elapsed();
+  const res = el("result");
+  res.classList.add("show");
+  let html = '<div class="row"><div><div class="lab">得分</div><div class="big">' + right + " / " + QUIZ.length + '</div></div>';
+  html += '<div><div class="lab">用时</div><div class="big">' + fmt(sec) + '</div></div>';
+  html += '<div><div class="lab">正确率</div><div class="big">' + Math.round(right * 100 / QUIZ.length) + '%</div></div></div>';
+  if (wrong.length) {
+    html += '<div class="lab">错题类型（这个比分数重要）</div><ul class="wronglist">';
+    wrong.forEach(function (w) {
+      html += '<li>第 ' + w.no + ' 题 · ' + w.type + '　你选 ' + w.mine + '，正确答案 ' + w.ans + '</li>';
+    });
+    html += '</ul><p class="hint">把这几类抄进错题本，明天换数字自己出 3 道同型题。</p>';
+  } else {
+    html += '<p class="hint">全对。把这张表的下一个难度档提上来，或者直接进下一套。</p>';
+  }
+  res.innerHTML = html;
+  save(sec, right);
+  res.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function save(sec, right) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    arr.push({ set: el("material").dataset.set || document.title, score: right, total: QUIZ.length, sec: sec, at: new Date().toLocaleString("zh-CN") });
+    localStorage.setItem(KEY, JSON.stringify(arr.slice(-30)));
+    renderHistory();
+  } catch (e) {}
+}
+function renderHistory() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    const ul = el("history");
+    ul.innerHTML = "";
+    if (!arr.length) { ul.innerHTML = "<li><span>还没有记录</span><span></span></li>"; return; }
+    arr.slice().reverse().forEach(function (x) {
+      const li = document.createElement("li");
+      li.innerHTML = "<span>" + x.at + "　" + x.set + "</span><span>" + x.score + "/" + x.total + "　" + fmt(x.sec) + "</span>";
+      ul.appendChild(li);
+    });
+  } catch (e) {}
+}
+el("submit").addEventListener("click", submit);
+el("reset").addEventListener("click", function () { location.reload(); });
+render();
+renderHistory();
+st.timer = setInterval(tick, 1000);
+tick();
+</script>
+</body>
+</html>
