@@ -199,7 +199,24 @@ function submit() {
   } else {
     html += '<p class="hint">全对。把这张表的下一个难度档提上来，或者直接进下一套。</p>';
   }
+  var summary = el("material").dataset.set || document.title;
+  summary += "　" + right + "/" + QUIZ.length + "　用时" + fmt(sec);
+  if (wrong.length) {
+    summary += "；错题：" + wrong.map(function (w) { return "第" + w.no + "题(" + w.type + ")"; }).join("、");
+  }
+  html += '<div class="actions" style="margin-top:14px"><button class="ghost" id="copyRes">复制结果（发给我）</button></div>';
   res.innerHTML = html;
+  el("copyRes").addEventListener("click", function () {
+    var ok = false;
+    try { navigator.clipboard.writeText(summary); ok = true; } catch (e) { ok = false; }
+    if (!ok) {
+      var ta = document.createElement("textarea");
+      ta.value = summary; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); ok = true; } catch (e2) {}
+      document.body.removeChild(ta);
+    }
+    this.textContent = ok ? "已复制，粘贴发我就行" : "复制失败，手动选中上面的文字";
+  });
   save(sec, right);
   saveWrong(wrongFull);
   res.scrollIntoView({ behavior: "smooth", block: "center" });
