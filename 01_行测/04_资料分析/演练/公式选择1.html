@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>公式选择训练 · 第 1 组</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--blue:#1f5fbf;--blue-bg:#eaf1fb;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:28px 20px 80px}
+header h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.hud{display:flex;gap:18px;align-items:center;margin:16px 0 22px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:14px;position:sticky;top:8px;z-index:9}
+.hud .t{font-variant-numeric:tabular-nums;font-weight:600;font-size:17px;letter-spacing:1px}
+.hud .grow{flex:1}
+.hud .p{color:var(--muted)}
+.material{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:15px;margin-bottom:18px}
+.material p{margin:0 0 10px}
+.material p:last-child{margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 18px;margin-bottom:14px}
+.stem{font-size:15px;margin:0 0 12px;font-weight:600}
+.stem .no{display:inline-block;min-width:22px;color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:#fbfbfa;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:7px 0;font:inherit;font-size:14.5px;color:inherit;cursor:pointer;transition:border-color .12s,background .12s}
+.opt:hover{border-color:#c9c5bd}
+.opt .k{flex:none;width:20px;color:var(--muted);font-weight:600}
+.opt.sel{border-color:var(--blue);background:var(--blue-bg)}
+.opt.ok{border-color:var(--green);background:var(--green-bg)}
+.opt.no{border-color:var(--red);background:var(--red-bg)}
+.opt.lock{cursor:default}
+.opt.lock:hover{border-color:var(--line)}
+.opt.ok.lock:hover{border-color:var(--green)}
+.opt.no.lock:hover{border-color:var(--red)}
+.sol{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;color:#333}
+.sol.show{display:block}
+.sol b{color:var(--ink)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;margin-left:8px;vertical-align:2px}
+.tag.ok{background:var(--green-bg);color:var(--green)}
+.tag.no{background:var(--red-bg);color:var(--red)}
+.actions{display:flex;gap:10px;margin:22px 0 8px}
+button.primary{flex:1;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:13px;font:inherit;font-size:15px;cursor:pointer}
+button.primary:disabled{opacity:.35;cursor:not-allowed}
+button.ghost{background:transparent;border:1px solid var(--line);border-radius:10px;padding:13px 18px;font:inherit;font-size:15px;color:var(--muted);cursor:pointer}
+.result{display:none;margin-top:16px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.result.show{display:block}
+.result .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.result .row{display:flex;gap:24px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px}
+.result .lab{color:var(--muted);font-size:13px}
+.wronglist{margin:6px 0 0;padding-left:18px;font-size:14px;color:#444}
+.history{margin-top:34px;border-top:1px solid var(--line);padding-top:16px}
+.history h3{font-size:14px;color:var(--muted);font-weight:500;margin:0 0 8px}
+.history ul{list-style:none;margin:0;padding:0;font-size:13px;color:var(--muted)}
+.history li{display:flex;gap:12px;padding:5px 0;border-bottom:1px dotted #ececea;font-variant-numeric:tabular-nums}
+.history li span:first-child{flex:1}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>公式选择训练 · 第 1 组</h1>
+    <p class="sub">12 题 · 只选公式，不动笔算 · 建议 6 分钟</p>
+  </header>
+
+  <div class="hud">
+    <div class="t" id="timer">00:00</div>
+    <div class="grow p" id="progress">已答 0 / 0</div>
+    <div class="p" id="hintbar">计时中</div>
+  </div>
+
+  <section class="material" id="material" data-set="公式选择训练 · 第 1 组"><p><b>材料</b>：2024 年，A 市新登记经营主体 12.8 万户，同比增长 6.7%。其中企业 4.2 万户，同比增长 11.4%；个体工商户 8.6 万户，同比增长 4.5%。2024 年查处违法案件 2.16 万件，同比增长 8.5%；罚没款 1.32 亿元，同比下降 12.6%。</p><p>下面每道题都<b>只选公式，不算结果</b>。数字用材料里的原数，别改。</p></section>
+  <main id="questions"></main>
+
+  <div class="actions">
+    <button class="primary" id="submit" disabled>交卷</button>
+    <button class="ghost" id="reset">重做</button>
+  </div>
+
+  <section class="result" id="result"></section>
+
+  <section class="history">
+    <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
+    <ul id="history"></ul>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。错题会自动记进 <a id="wbLink" href="../错题集.html">错题集</a>。</p>
+  </section>
+</div>
+
+<script>
+const QUIZ = [{"stem": "2023 年，A 市新登记经营主体约为多少万户？（材料给的是 2024 年的 12.8 万户、同比增长 6.7%）", "options": ["12.8 ÷ (1 + 6.7%)", "12.8 × (1 − 6.7%)", "12.8 × 6.7%", "12.8 ÷ 6.7%"], "answer": 0, "type": "基期量", "solution": "<b>基期量 = 现期 ÷ (1+r)。</b>第二个选项 12.8×(1−6.7%) 是最常见的错法——增长是在基期上加了 6.7%，退回去要除，不能乘。"}, {"stem": "2024 年新登记企业比 2023 年约增加多少万户？（企业 4.2 万户，同比增长 11.4%）", "options": ["4.2 × 11.4%", "4.2 × 11.4% ÷ (1 + 11.4%)", "4.2 ÷ 11.4%", "4.2 × (1 + 11.4%)"], "answer": 1, "type": "增长量", "solution": "<b>增长量 = 现期 × r/(1+r)。</b>第一个选项 4.2×11.4% 是「增长量占现期的比例」，不是增长量本身。r=11.4% 时，r/(1+r) 只有 10.2%，差了 1.2 个百分点，选项一设就分得清。"}, {"stem": "2023 年，A 市罚没款约为多少亿元？（罚没款 1.32 亿元，同比下降 12.6%）", "options": ["1.32 ÷ (1 − 12.6%)", "1.32 × (1 − 12.6%)", "1.32 × (1 + 12.6%)", "1.32 ÷ 12.6%"], "answer": 0, "type": "基期量（下降型）", "solution": "<b>下降也是除。</b>现期 = 基期 ×(1−12.6%)，所以基期 = 1.32 ÷ (1−12.6%)。<br>很多人看到「下降」就把符号反过来写乘号，这一步错了，后面全错。"}, {"stem": "2024 年，A 市新登记企业中企业所占比重约为多少？", "options": ["4.2 ÷ 12.8", "12.8 ÷ 4.2", "4.2 × 12.8", "4.2 ÷ (1 + 11.4%)"], "answer": 0, "type": "比重", "solution": "<b>比重 = 部分 ÷ 整体。</b>部分是企业 4.2，整体是新登记经营主体 12.8。注意别把分母写成 8.6（个体工商户），那是另一个部分。"}, {"stem": "2024 年新登记经营主体中，企业所占比重比上年上升还是下降？（企业 +11.4%，整体 +6.7%）", "options": ["比 11.4% 与 6.7% 的大小，不用算", "先算 4.2÷12.8，再看结果大于还是小于 1", "分别算出两年比重再相减", "比 4.2 与 12.8 的大小"], "answer": 0, "type": "比重变化（方向）", "solution": "<b>方向只看两个增速。</b>部分增速 11.4% > 整体增速 6.7% → 比重上升。<br>算两年比重再相减也能出结果，但那要多算两遍除法，考场上纯属浪费。"}, {"stem": "2024 年，企业所占比重比上年变化了几个百分点？", "options": ["4.2/12.8 × (11.4% − 6.7%) ÷ (1 + 11.4%)", "(11.4% − 6.7%)", "4.2/12.8 − 3.77/12.0", "4.2/12.8 × (1 + 11.4%)"], "answer": 0, "type": "比重变化（幅度）", "solution": "<b>幅度 = 现期比重 × (a−b)/(1+a)。</b>第二个选项直接把两个增速相减，是最高频的错法——增速差要乘以现期比重才是百分点。<br>第三个选项（算两年比重相减）结果是对的，但慢，而且要自己算基期比重，多一步出错。"}, {"stem": "2024 年，A 市市场监管部门户均罚没款约为多少元？", "options": ["1.32 亿元 ÷ 2.16 万件", "2.16 万件 ÷ 1.32 亿元", "1.32 亿元 × 2.16 万件", "1.32 亿元 ÷ (1 − 12.6%)"], "answer": 0, "type": "平均数", "solution": "<b>平均数 = 总量 ÷ 个数。</b>「户均」= 罚没款 ÷ 案件数。分子是钱，分母是件数，方向反了就变成「每元多少件」，量纲都不对。"}, {"stem": "2024 年户均罚没款比上年约下降百分之几？（罚没款 −12.6%，案件数 +8.5%）", "options": ["(1 − 12.6%) ÷ (1 + 8.5%) − 1", "−12.6% − 8.5%", "−12.6% + 8.5%", "(1 + 8.5%) ÷ (1 − 12.6%) − 1"], "answer": 0, "type": "平均数变化", "solution": "<b>平均数变化 = (1+a)/(1+b) − 1。</b>后三个都是「把两个增速加减」，全错：一个是 −21.1%，一个是 −4.1%，一个方向反了。<br>真实答案是 −19.4%——分子降、分母升，平均数跌得比分子降幅还狠。"}, {"stem": "2024 年新登记个体工商户约是企业数量的多少倍？", "options": ["8.6 ÷ 4.2", "8.6 ÷ 4.2 − 1", "(8.6 − 4.2) ÷ 4.2", "4.2 ÷ 8.6"], "answer": 0, "type": "倍数", "solution": "<b>「是几倍」直接除。</b>第二个是「多几倍」，第三个是「多百分之几」，三个问法三个式子，题目问哪个用哪个。"}, {"stem": "2024 年新登记个体工商户比企业多百分之几？", "options": ["(8.6 − 4.2) ÷ 4.2", "(8.6 − 4.2) ÷ 8.6", "8.6 ÷ 4.2", "(4.2 − 8.6) ÷ 8.6"], "answer": 0, "type": "增长率（比较型）", "solution": "<b>「A 比 B 多百分之几」= (A−B) ÷ B</b>，分母跟着「比」字后面的那个走。这里是「比企业」，所以除以 4.2。"}, {"stem": "已知 2023 年 A 市新登记企业 3.77 万户，同比增长 11.4%，求 2024 年企业数量。", "options": ["3.77 × (1 + 11.4%)", "3.77 ÷ (1 + 11.4%)", "3.77 × 11.4%", "3.77 + 11.4%"], "answer": 0, "type": "现期量", "solution": "<b>现期 = 基期 × (1+r)。</b>这题和前面正好相反：给的是基期求现期，用乘；给现期求基期，用除。方向搞反是这一组最常见的错。"}, {"stem": "要比较「案件数增量」和「企业增量」谁更大，正确做法是：", "options": ["比 2.16×8.5% 与 4.2×11.4%（现期×增速）", "比 2.16 与 4.2 的大小", "比 8.5% 与 11.4% 的大小", "算出两年绝对值再相减"], "answer": 0, "type": "增量比较", "solution": "<b>比较增量看「现期 × 增速」。</b>2.16×8.5%=0.18，4.2×11.4%=0.48，企业增量更大。<br>严格式子还要除以 (1+r)，但两个 r 相差不大时，直接比乘积足够定大小——这是资料分析里少数可以「近似比较」的地方。"}];
+const KEY = "kaogong_quiz_history_v1";
+const KEYW = "kaogong_wrong_v1";
+const WRONGBOOK = "../错题集.html";
+const el = function (id) { return document.getElementById(id); };
+const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
+
+function fmt(sec) {
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return m + ":" + s;
+}
+function elapsed() { return Math.floor((Date.now() - st.start) / 1000); }
+function tick() {
+  if (st.submitted) return;
+  el("timer").textContent = fmt(elapsed());
+}
+function answeredCount() { return Object.keys(st.answers).length; }
+function updateHud() {
+  el("progress").textContent = "已答 " + answeredCount() + " / " + QUIZ.length;
+  el("submit").disabled = answeredCount() === 0;
+  const n = answeredCount();
+  el("hintbar").textContent = n === QUIZ.length ? "可以交卷了" : (n === 0 ? "计时中" : "还有 " + (QUIZ.length - n) + " 题");
+}
+function render() {
+  const box = el("questions");
+  QUIZ.forEach(function (q, qi) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = "card-" + qi;
+    const stem = document.createElement("p");
+    stem.className = "stem";
+    stem.innerHTML = '<span class="no">' + (qi + 1) + '.</span>' + q.stem;
+    card.appendChild(stem);
+    q.options.forEach(function (text, oi) {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.type = "button";
+      b.dataset.q = qi;
+      b.dataset.o = oi;
+      b.innerHTML = '<span class="k">' + "ABCD"[oi] + '</span><span class="t">' + text + '</span>';
+      b.addEventListener("click", function () { pick(qi, oi); });
+      card.appendChild(b);
+    });
+    const sol = document.createElement("div");
+    sol.className = "sol";
+    sol.id = "sol-" + qi;
+    sol.innerHTML = q.solution;
+    card.appendChild(sol);
+    box.appendChild(card);
+  });
+  updateHud();
+}
+function pick(qi, oi) {
+  if (st.submitted) return;
+  st.answers[qi] = oi;
+  const card = el("card-" + qi);
+  const opts = card.querySelectorAll(".opt");
+  for (let i = 0; i < opts.length; i++) {
+    opts[i].classList.toggle("sel", i === oi);
+  }
+  updateHud();
+}
+function submit() {
+  if (st.submitted) return;
+  if (answeredCount() < QUIZ.length) {
+    const left = QUIZ.length - answeredCount();
+    if (!confirm("还有 " + left + " 题没答，确定交卷？")) return;
+  }
+  st.submitted = true;
+  clearInterval(st.timer);
+  el("hintbar").textContent = "已交卷";
+  el("submit").disabled = true;
+  let right = 0;
+  const wrong = [];
+  const wrongFull = [];
+  QUIZ.forEach(function (q, qi) {
+    const card = el("card-" + qi);
+    const opts = card.querySelectorAll(".opt");
+    const mine = st.answers[qi];
+    for (let i = 0; i < opts.length; i++) {
+      opts[i].classList.add("lock");
+      opts[i].classList.remove("sel");
+      if (i === q.answer) opts[i].classList.add("ok");
+      if (i === mine && mine !== q.answer) opts[i].classList.add("no");
+    }
+    const ok = mine === q.answer;
+    if (ok) { right++; }
+    else {
+      wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+      wrongFull.push({ stem: q.stem, options: q.options, mine: mine, answer: q.answer, type: q.type, solution: q.solution });
+    }
+    const tag = document.createElement("span");
+    tag.className = "tag " + (ok ? "ok" : "no");
+    tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
+    card.querySelector(".stem").appendChild(tag);
+    el("sol-" + qi).classList.add("show");
+  });
+  const sec = elapsed();
+  const res = el("result");
+  res.classList.add("show");
+  let html = '<div class="row"><div><div class="lab">得分</div><div class="big">' + right + " / " + QUIZ.length + '</div></div>';
+  html += '<div><div class="lab">用时</div><div class="big">' + fmt(sec) + '</div></div>';
+  html += '<div><div class="lab">正确率</div><div class="big">' + Math.round(right * 100 / QUIZ.length) + '%</div></div></div>';
+  if (wrong.length) {
+    html += '<div class="lab">错题类型（这个比分数重要）</div><ul class="wronglist">';
+    wrong.forEach(function (w) {
+      html += '<li>第 ' + w.no + ' 题 · ' + w.type + '　你选 ' + w.mine + '，正确答案 ' + w.ans + '</li>';
+    });
+    html += '</ul><p class="hint">把这几类抄进错题本，明天换数字自己出 3 道同型题。</p>';
+  } else {
+    html += '<p class="hint">全对。把这张表的下一个难度档提上来，或者直接进下一套。</p>';
+  }
+  var summary = el("material").dataset.set || document.title;
+  summary += "　" + right + "/" + QUIZ.length + "　用时" + fmt(sec);
+  if (wrong.length) {
+    summary += "；错题：" + wrong.map(function (w) { return "第" + w.no + "题(" + w.type + ")"; }).join("、");
+  }
+  html += '<div class="actions" style="margin-top:14px"><button class="ghost" id="copyRes">复制结果（发给我）</button></div>';
+  res.innerHTML = html;
+  el("copyRes").addEventListener("click", function () {
+    var ok = false;
+    try { navigator.clipboard.writeText(summary); ok = true; } catch (e) { ok = false; }
+    if (!ok) {
+      var ta = document.createElement("textarea");
+      ta.value = summary; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); ok = true; } catch (e2) {}
+      document.body.removeChild(ta);
+    }
+    this.textContent = ok ? "已复制，粘贴发我就行" : "复制失败，手动选中上面的文字";
+  });
+  save(sec, right);
+  saveWrong(wrongFull);
+  postLog({
+    kind: "attempt",
+    set: el("material").dataset.set || document.title,
+    score: right,
+    total: QUIZ.length,
+    sec: sec,
+    wrong: wrongFull.map(function (w) { return { stem: w.stem, type: w.type, mine: w.mine, answer: w.answer }; })
+  });
+  res.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function postLog(obj) {
+  try {
+    if (location.protocol === "file:") return;
+    fetch("/api/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj)
+    }).catch(function () {});
+  } catch (e) {}
+}
+
+function saveWrong(items) {
+  if (!items.length) return;
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEYW) || "[]");
+    const set = el("material").dataset.set || document.title;
+    items.forEach(function (it) {
+      const id = set + "|" + it.stem;
+      const found = arr.filter(function (x) { return x.id === id; })[0];
+      const rec = {
+        id: id, set: set, stem: it.stem, options: it.options, mine: it.mine,
+        answer: it.answer, type: it.type, solution: it.solution,
+        at: new Date().toLocaleString("zh-CN"), times: 1
+      };
+      if (found) {
+        found.times = (found.times || 1) + 1;
+        found.mine = it.mine;
+        found.at = rec.at;
+      } else {
+        arr.push(rec);
+      }
+    });
+    localStorage.setItem(KEYW, JSON.stringify(arr.slice(-200)));
+  } catch (e) {}
+}
+
+function save(sec, right) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    arr.push({ set: el("material").dataset.set || document.title, score: right, total: QUIZ.length, sec: sec, at: new Date().toLocaleString("zh-CN") });
+    localStorage.setItem(KEY, JSON.stringify(arr.slice(-30)));
+    renderHistory();
+  } catch (e) {}
+}
+function renderHistory() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    const ul = el("history");
+    ul.innerHTML = "";
+    if (!arr.length) { ul.innerHTML = "<li><span>还没有记录</span><span></span></li>"; return; }
+    arr.slice().reverse().forEach(function (x) {
+      const li = document.createElement("li");
+      li.innerHTML = "<span>" + x.at + "　" + x.set + "</span><span>" + x.score + "/" + x.total + "　" + fmt(x.sec) + "</span>";
+      ul.appendChild(li);
+    });
+  } catch (e) {}
+}
+el("submit").addEventListener("click", submit);
+el("reset").addEventListener("click", function () { location.reload(); });
+render();
+renderHistory();
+st.timer = setInterval(tick, 1000);
+tick();
+</script>
+</body>
+</html>
