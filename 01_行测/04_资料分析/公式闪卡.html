@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>公式闪卡</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:22px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+.bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px}
+.bar b{color:var(--ink);font-variant-numeric:tabular-nums}
+.board{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:40px 28px;text-align:center;min-height:270px;display:flex;flex-direction:column;justify-content:center}
+.board .q{font-size:24px;font-weight:700;line-height:1.5}
+.board .tag{display:inline-block;font-size:11px;background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:1px 9px;margin-bottom:14px}
+.board .a{font-size:26px;font-weight:700;color:var(--green);margin-top:22px;font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.board .a.hide{display:none}
+.board .note{font-size:13px;color:var(--muted);margin-top:14px}
+.actions{display:flex;gap:10px;margin-top:16px}
+button{border-radius:10px;padding:13px 18px;font:inherit;font-size:15px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+button.wide{flex:1}
+button.dark{background:var(--ink);color:#fff;border:0}
+button.ok{background:var(--green-bg);border-color:#bfe3cd;color:var(--green)}
+button.no{background:var(--red-bg);border-color:#f0c9c6;color:var(--red)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:18px;text-align:center}
+.done{display:none}
+.done.on{display:block}
+.summary{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;margin-top:8px}
+.summary .big{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums}
+.summary .lab{color:var(--muted);font-size:13px}
+.rule{background:#fdf4e3;color:#8a5a00;border-radius:10px;padding:12px 14px;font-size:13px;margin-top:16px;text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>公式闪卡</h1>
+  <p class="sub">看问法，三秒内说出式子。说不出来就点「没记住」，别硬想。</p>
+
+  <div class="bar">
+    <span>第 <b id="idx">1</b> / <b id="total">12</b> 张</span>
+    <span>记住 <b id="okn">0</b></span>
+    <span>没记住 <b id="badn">0</b></span>
+    <span id="clock">00:00</span>
+  </div>
+
+  <div class="board">
+    <div><span class="tag" id="tag">基期量</span></div>
+    <div class="q" id="q">求基期量（增长型）</div>
+    <div class="a hide" id="a">12.8 ÷ (1+r)</div>
+    <div class="note" id="note">先自己想，再点揭晓</div>
+  </div>
+
+  <div class="actions" id="act1">
+    <button class="dark wide" id="reveal">揭晓式子</button>
+  </div>
+  <div class="actions" id="act2" style="display:none">
+    <button class="ok wide" id="yes">说对了</button>
+    <button class="no wide" id="no">没记住</button>
+  </div>
+
+  <div class="summary done" id="sum"></div>
+
+  <p class="hint">12 张一轮。没记住的可以单独补练一轮，补练全对才算这张过关。</p>
+</div>
+
+<script>
+var CARDS = [
+  { q: "求基期量（增长型）", a: "现期 ÷ (1 + r)", tag: "基期" },
+  { q: "求基期量（下降型）", a: "现期 ÷ (1 − r)", tag: "基期" },
+  { q: "已知基期和增速，求现期", a: "基期 × (1 + r)", tag: "现期" },
+  { q: "求增长量", a: "现期 × r ÷ (1 + r)", tag: "增长量" },
+  { q: "求增长率", a: "增长量 ÷ 基期量", tag: "增长率" },
+  { q: "求比重", a: "部分 ÷ 整体", tag: "比重" },
+  { q: "判断比重升降", a: "比 部分增速 a 与 整体增速 b（a>b 升）", tag: "比重" },
+  { q: "求比重变化幅度", a: "现期比重 × (a − b) ÷ (1 + a)", tag: "比重" },
+  { q: "求平均数（户均/人均）", a: "总量 ÷ 个数", tag: "平均数" },
+  { q: "求平均数变化率", a: "(1 + a) ÷ (1 + b) − 1", tag: "平均数" },
+  { q: "A 是 B 的几倍", a: "A ÷ B", tag: "倍数" },
+  { q: "A 比 B 多百分之几", a: "(A − B) ÷ B", tag: "比较" }
+];
+
+var order = [], i = 0, ok = 0, bad = 0, revealed = false, t0 = 0, timer = null, wrongTags = [], wrongCards = [], rounds = 0;
+
+function el(id) { return document.getElementById(id); }
+function shuffle(a) {
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function fmt(s) {
+  var m = String(Math.floor(s / 60)).padStart(2, "0");
+  var n = String(s % 60).padStart(2, "0");
+  return m + ":" + n;
+}
+function tick() { el("clock").textContent = fmt(Math.floor((Date.now() - t0) / 1000)); }
+
+function start(deck) {
+  order = shuffle((deck || CARDS).slice());
+  i = 0; ok = 0; bad = 0; wrongTags = []; wrongCards = [];
+  rounds++;
+  t0 = Date.now();
+  if (timer) clearInterval(timer);
+  timer = setInterval(tick, 1000);
+  el("sum").classList.remove("on");
+  el("act1").style.display = "flex";
+  el("act2").style.display = "none";
+  el("total").textContent = CARDS.length;
+  show();
+}
+function show() {
+  var c = order[i];
+  revealed = false;
+  el("tag").textContent = c.tag;
+  el("q").textContent = c.q;
+  el("a").textContent = c.a;
+  el("a").classList.add("hide");
+  el("note").textContent = "先自己想，再点揭晓";
+  el("idx").textContent = i + 1;
+  el("reveal").textContent = "揭晓式子";
+  el("act1").style.display = "flex";
+  el("act2").style.display = "none";
+}
+function reveal() {
+  revealed = !revealed;
+  el("a").classList.toggle("hide", !revealed);
+  el("act1").style.display = revealed ? "none" : "flex";
+  el("act2").style.display = revealed ? "flex" : "none";
+  if (revealed) el("note").textContent = "对上了吗？对上点左边，对不上点右边";
+}
+function next(isOk) {
+  if (isOk) { ok++; } else { bad++; wrongTags.push(order[i].tag + "：" + order[i].q); wrongCards.push(order[i]); }
+  el("okn").textContent = ok;
+  el("badn").textContent = bad;
+  i++;
+  if (i >= order.length) { finish(); return; }
+  show();
+}
+function finish() {
+  clearInterval(timer);
+  var sec = Math.floor((Date.now() - t0) / 1000);
+  el("act1").style.display = "none";
+  el("act2").style.display = "none";
+  var s = el("sum");
+  s.classList.add("on");
+  s.innerHTML = '<div class="lab">本轮</div><div class="big">' + ok + " / " + CARDS.length + "</div>" +
+    '<div class="lab">用时 ' + fmt(sec) + "</div>" +
+    (bad ? '<div class="rule">没记住的：' + wrongTags.join("；") + "</div>" : '<div class="rule">全对。隔 12 小时再来一轮，明天再一轮。</div>') +
+    (wrongCards.length ? '<div style="margin-top:10px"><button class="ok" onclick="start(wrongCards)">补练这 ' + wrongCards.length + ' 张</button></div>' : "") +
+    '<div style="margin-top:18px"><button class="dark" onclick="start()">再来一轮</button></div>';
+  postLog({ kind: "flash", set: "公式闪卡", score: ok, total: CARDS.length, sec: sec, wrong: wrongTags });
+}
+function postLog(obj) {
+  try {
+    if (location.protocol === "file:") return;
+    fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj) }).catch(function () {});
+  } catch (e) {}
+}
+
+el("reveal").addEventListener("click", reveal);
+el("yes").addEventListener("click", function () { next(true); });
+el("no").addEventListener("click", function () { next(false); });
+start();
+</script>
+</body>
+</html>
