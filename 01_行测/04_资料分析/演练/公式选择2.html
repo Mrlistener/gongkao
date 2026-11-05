@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>公式选择 · 第 2 组　分母与方向</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--blue:#1f5fbf;--blue-bg:#eaf1fb;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:28px 20px 80px}
+header h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.hud{display:flex;gap:18px;align-items:center;margin:16px 0 22px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:14px;position:sticky;top:8px;z-index:9}
+.hud .t{font-variant-numeric:tabular-nums;font-weight:600;font-size:17px;letter-spacing:1px}
+.hud .grow{flex:1}
+.hud .p{color:var(--muted)}
+.material{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:15px;margin-bottom:18px}
+.material p{margin:0 0 10px}
+.material p:last-child{margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 18px;margin-bottom:14px}
+.stem{font-size:15px;margin:0 0 12px;font-weight:600}
+.stem .no{display:inline-block;min-width:22px;color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:#fbfbfa;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:7px 0;font:inherit;font-size:14.5px;color:inherit;cursor:pointer;transition:border-color .12s,background .12s}
+.opt:hover{border-color:#c9c5bd}
+.opt .k{flex:none;width:20px;color:var(--muted);font-weight:600}
+.opt.sel{border-color:var(--blue);background:var(--blue-bg)}
+.opt.ok{border-color:var(--green);background:var(--green-bg)}
+.opt.no{border-color:var(--red);background:var(--red-bg)}
+.opt.lock{cursor:default}
+.opt.lock:hover{border-color:var(--line)}
+.opt.ok.lock:hover{border-color:var(--green)}
+.opt.no.lock:hover{border-color:var(--red)}
+.sol{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;color:#333}
+.sol.show{display:block}
+.sol b{color:var(--ink)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;margin-left:8px;vertical-align:2px}
+.tag.ok{background:var(--green-bg);color:var(--green)}
+.tag.no{background:var(--red-bg);color:var(--red)}
+.actions{display:flex;gap:10px;margin:22px 0 8px}
+button.primary{flex:1;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:13px;font:inherit;font-size:15px;cursor:pointer}
+button.primary:disabled{opacity:.35;cursor:not-allowed}
+button.ghost{background:transparent;border:1px solid var(--line);border-radius:10px;padding:13px 18px;font:inherit;font-size:15px;color:var(--muted);cursor:pointer}
+.result{display:none;margin-top:16px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.result.show{display:block}
+.result .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.result .row{display:flex;gap:24px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px}
+.result .lab{color:var(--muted);font-size:13px}
+.wronglist{margin:6px 0 0;padding-left:18px;font-size:14px;color:#444}
+.history{margin-top:34px;border-top:1px solid var(--line);padding-top:16px}
+.history h3{font-size:14px;color:var(--muted);font-weight:500;margin:0 0 8px}
+.history ul{list-style:none;margin:0;padding:0;font-size:13px;color:var(--muted)}
+.history li{display:flex;gap:12px;padding:5px 0;border-bottom:1px dotted #ececea;font-variant-numeric:tabular-nums}
+.history li span:first-child{flex:1}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>公式选择 · 第 2 组　分母与方向</h1>
+    <p class="sub">8 题 · 只选式子，不算结果 · 建议 4 分钟</p>
+  </header>
+
+  <div class="hud">
+    <div class="t" id="timer">00:00</div>
+    <div class="grow p" id="progress">已答 0 / 0</div>
+    <div class="p" id="hintbar">计时中</div>
+  </div>
+
+  <section class="material" id="material" data-set="公式选择 · 第 2 组　分母与方向"><p><b>材料</b>：2024 年，A 市新登记经营主体 12.8 万户，同比增长 6.7%。其中企业 4.2 万户，同比增长 11.4%（2023 年为 3.77 万户）；个体工商户 8.6 万户，同比增长 4.5%。2024 年查处违法案件 2.16 万件，同比增长 8.5%；罚没款 1.32 亿元，同比下降 12.6%。</p><p>这组专练只有两件事：<b>分母是谁</b>、<b>上升还是下降</b>。还是只选式子，不算结果。</p></section>
+  <main id="questions"></main>
+
+  <div class="actions">
+    <button class="primary" id="submit" disabled>交卷</button>
+    <button class="ghost" id="reset">重做</button>
+  </div>
+
+  <section class="result" id="result"></section>
+
+  <section class="history">
+    <h3>本机练习记录（只存这台电脑的浏览器里）</h3>
+    <ul id="history"></ul>
+    <p class="hint">离线可用，答案只在本页判定，不会上传。错题会自动记进 <a id="wbLink" href="../错题集.html">错题集</a>。</p>
+  </section>
+</div>
+
+<script>
+const QUIZ = [{"stem": "2024 年，个体工商户比企业多百分之几？", "options": ["(8.6 − 4.2) ÷ 4.2", "(8.6 − 4.2) ÷ 8.6", "8.6 ÷ 4.2", "(4.2 − 8.6) ÷ 8.6"], "answer": 0, "type": "增长率（比较型）", "solution": "<b>分母跟着「比」字后面走。</b>「比企业」，所以除以企业的 4.2。<br>上一组你在这题选了 ÷8.6——那是把分母当成了前面的个体户。这一点在真题里会连环错：后面所有「多百分之几 / 少百分之几」都靠这个方向。"}, {"stem": "2024 年，企业比个体工商户少百分之几？", "options": ["(8.6 − 4.2) ÷ 8.6", "(8.6 − 4.2) ÷ 4.2", "4.2 ÷ 8.6", "(4.2 − 8.6) ÷ 4.2"], "answer": 0, "type": "增长率（比较型）", "solution": "<b>还是看「比」字。</b>这次是「比个体工商户」，分母换成 8.6。<br>把这两题连着看：「多百分之几」用 4.2 做分母，「少百分之几」用 8.6 做分母——<b>同一个差，两个答案，因为分母换了</b>。"}, {"stem": "2024 年企业数量比 2023 年多百分之几？（2023 年 3.77 万户，2024 年 4.2 万户）", "options": ["(4.2 − 3.77) ÷ 3.77", "(4.2 − 3.77) ÷ 4.2", "4.2 ÷ 3.77", "4.2 ÷ 3.77 − 3.77"], "answer": 0, "type": "增长率", "solution": "<b>增长率的母体永远是基期。</b>增长率 = 增长量 ÷ 基期量 = (4.2−3.77) ÷ 3.77。<br>第三个 4.2÷3.77 算出来是 1.11，那是「是几倍」的答案，要减 1 才是增长率。"}, {"stem": "判断企业所占比重比上年上升还是下降，考场上最省时的做法是：", "options": ["比 11.4% 与 6.7% 的大小", "分别算出两年比重再相减", "算 4.2 ÷ 12.8 看是否大于 0.3", "比 4.2 与 8.6 的大小"], "answer": 0, "type": "比重变化（方向）", "solution": "<b>方向只看两个增速，一秒出结果。</b>11.4% > 6.7% → 上升。<br>你上一组选了「算两年比重再相减」——那个做法结果也对，但要多做两次除法，在 6 分半做 6 道计算题的节奏里，这一步就是超时的来源。<br><b>资料分析的第一原则：能不算就不算。</b>"}, {"stem": "判断户均罚没款比上年上升还是下降，最省时的做法是：", "options": ["比分子增速 −12.6% 与分母增速 +8.5%", "分别算出两年户均再比较", "比 1.32 与 2.16 的大小", "比 12.6% 与 8.5% 的绝对值大小"], "answer": 0, "type": "平均数变化（方向）", "solution": "<b>分子降、分母升，平均数必降，连算都不用算。</b><br>第四个选项是陷阱：12.6 > 8.5 不代表罚没款降得更多，因为一个是分子、一个是分母，方向完全相反。"}, {"stem": "材料说「罚没款同比下降 12.6%」，要求 2023 年的罚没款，式子应该是：", "options": ["1.32 ÷ (1 − 12.6%)", "1.32 × (1 − 12.6%)", "1.32 × (1 + 12.6%)", "1.32 ÷ 12.6%"], "answer": 0, "type": "基期量（下降型）", "solution": "<b>下降也是除，符号跟着变成减。</b>现期 = 基期 ×(1−12.6%)，所以基期 = 现期 ÷ (1−12.6%)。<br>看到「下降」就把乘法写成除法，这一步反了，数字再准也没用。"}, {"stem": "「同比增长三成」指的是：", "options": ["增长率 30%", "增长量 0.3 万户", "现期是基期的 30%", "增长量是基期的 30 倍"], "answer": 0, "type": "增长率（表述）", "solution": "<b>成数是率的另一种说法。</b>一成 = 10%，三成 = 30%，七成五 = 75%。<br>材料里出现「成」，一律当增长率处理，后面照样套 r/(1+r) 或 ÷(1+r)。"}, {"stem": "若 A 是 B 的 2 倍，那么 A 比 B 多百分之几？", "options": ["100%", "200%", "50%", "2%"], "answer": 0, "type": "倍数与百分数", "solution": "<b>是 2 倍 = 多 1 倍 = 多 100%。</b>「是几倍」和「多百分之几」差一个 1，这是资料分析里最容易被材料表述带偏的一处。"}];
+const KEY = "kaogong_quiz_history_v1";
+const KEYW = "kaogong_wrong_v1";
+const WRONGBOOK = "../错题集.html";
+const el = function (id) { return document.getElementById(id); };
+const st = { answers: {}, start: Date.now(), submitted: false, timer: null };
+
+function fmt(sec) {
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return m + ":" + s;
+}
+function elapsed() { return Math.floor((Date.now() - st.start) / 1000); }
+function tick() {
+  if (st.submitted) return;
+  el("timer").textContent = fmt(elapsed());
+}
+function answeredCount() { return Object.keys(st.answers).length; }
+function updateHud() {
+  el("progress").textContent = "已答 " + answeredCount() + " / " + QUIZ.length;
+  el("submit").disabled = answeredCount() === 0;
+  const n = answeredCount();
+  el("hintbar").textContent = n === QUIZ.length ? "可以交卷了" : (n === 0 ? "计时中" : "还有 " + (QUIZ.length - n) + " 题");
+}
+function render() {
+  const box = el("questions");
+  QUIZ.forEach(function (q, qi) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = "card-" + qi;
+    const stem = document.createElement("p");
+    stem.className = "stem";
+    stem.innerHTML = '<span class="no">' + (qi + 1) + '.</span>' + q.stem;
+    card.appendChild(stem);
+    q.options.forEach(function (text, oi) {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.type = "button";
+      b.dataset.q = qi;
+      b.dataset.o = oi;
+      b.innerHTML = '<span class="k">' + "ABCD"[oi] + '</span><span class="t">' + text + '</span>';
+      b.addEventListener("click", function () { pick(qi, oi); });
+      card.appendChild(b);
+    });
+    const sol = document.createElement("div");
+    sol.className = "sol";
+    sol.id = "sol-" + qi;
+    sol.innerHTML = q.solution;
+    card.appendChild(sol);
+    box.appendChild(card);
+  });
+  updateHud();
+}
+function pick(qi, oi) {
+  if (st.submitted) return;
+  st.answers[qi] = oi;
+  const card = el("card-" + qi);
+  const opts = card.querySelectorAll(".opt");
+  for (let i = 0; i < opts.length; i++) {
+    opts[i].classList.toggle("sel", i === oi);
+  }
+  updateHud();
+}
+function submit() {
+  if (st.submitted) return;
+  if (answeredCount() < QUIZ.length) {
+    const left = QUIZ.length - answeredCount();
+    if (!confirm("还有 " + left + " 题没答，确定交卷？")) return;
+  }
+  st.submitted = true;
+  clearInterval(st.timer);
+  el("hintbar").textContent = "已交卷";
+  el("submit").disabled = true;
+  let right = 0;
+  const wrong = [];
+  const wrongFull = [];
+  QUIZ.forEach(function (q, qi) {
+    const card = el("card-" + qi);
+    const opts = card.querySelectorAll(".opt");
+    const mine = st.answers[qi];
+    for (let i = 0; i < opts.length; i++) {
+      opts[i].classList.add("lock");
+      opts[i].classList.remove("sel");
+      if (i === q.answer) opts[i].classList.add("ok");
+      if (i === mine && mine !== q.answer) opts[i].classList.add("no");
+    }
+    const ok = mine === q.answer;
+    if (ok) { right++; }
+    else {
+      wrong.push({ no: qi + 1, type: q.type, mine: mine === undefined ? "未作答" : "ABCD"[mine], ans: "ABCD"[q.answer] });
+      wrongFull.push({ stem: q.stem, options: q.options, mine: mine, answer: q.answer, type: q.type, solution: q.solution });
+    }
+    const tag = document.createElement("span");
+    tag.className = "tag " + (ok ? "ok" : "no");
+    tag.textContent = ok ? "正确" : (mine === undefined ? "未作答" : "错误");
+    card.querySelector(".stem").appendChild(tag);
+    el("sol-" + qi).classList.add("show");
+  });
+  const sec = elapsed();
+  const res = el("result");
+  res.classList.add("show");
+  let html = '<div class="row"><div><div class="lab">得分</div><div class="big">' + right + " / " + QUIZ.length + '</div></div>';
+  html += '<div><div class="lab">用时</div><div class="big">' + fmt(sec) + '</div></div>';
+  html += '<div><div class="lab">正确率</div><div class="big">' + Math.round(right * 100 / QUIZ.length) + '%</div></div></div>';
+  if (wrong.length) {
+    html += '<div class="lab">错题类型（这个比分数重要）</div><ul class="wronglist">';
+    wrong.forEach(function (w) {
+      html += '<li>第 ' + w.no + ' 题 · ' + w.type + '　你选 ' + w.mine + '，正确答案 ' + w.ans + '</li>';
+    });
+    html += '</ul><p class="hint">把这几类抄进错题本，明天换数字自己出 3 道同型题。</p>';
+  } else {
+    html += '<p class="hint">全对。把这张表的下一个难度档提上来，或者直接进下一套。</p>';
+  }
+  var summary = el("material").dataset.set || document.title;
+  summary += "　" + right + "/" + QUIZ.length + "　用时" + fmt(sec);
+  if (wrong.length) {
+    summary += "；错题：" + wrong.map(function (w) { return "第" + w.no + "题(" + w.type + ")"; }).join("、");
+  }
+  html += '<div class="actions" style="margin-top:14px"><button class="ghost" id="copyRes">复制结果（发给我）</button></div>';
+  res.innerHTML = html;
+  el("copyRes").addEventListener("click", function () {
+    var ok = false;
+    try { navigator.clipboard.writeText(summary); ok = true; } catch (e) { ok = false; }
+    if (!ok) {
+      var ta = document.createElement("textarea");
+      ta.value = summary; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); ok = true; } catch (e2) {}
+      document.body.removeChild(ta);
+    }
+    this.textContent = ok ? "已复制，粘贴发我就行" : "复制失败，手动选中上面的文字";
+  });
+  save(sec, right);
+  saveWrong(wrongFull);
+  postLog({
+    kind: "attempt",
+    set: el("material").dataset.set || document.title,
+    score: right,
+    total: QUIZ.length,
+    sec: sec,
+    wrong: wrongFull.map(function (w) { return { stem: w.stem, type: w.type, mine: w.mine, answer: w.answer }; })
+  });
+  res.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function postLog(obj) {
+  try {
+    if (location.protocol === "file:") return;
+    fetch("/api/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj)
+    }).catch(function () {});
+  } catch (e) {}
+}
+
+function saveWrong(items) {
+  if (!items.length) return;
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEYW) || "[]");
+    const set = el("material").dataset.set || document.title;
+    items.forEach(function (it) {
+      const id = set + "|" + it.stem;
+      const found = arr.filter(function (x) { return x.id === id; })[0];
+      const rec = {
+        id: id, set: set, stem: it.stem, options: it.options, mine: it.mine,
+        answer: it.answer, type: it.type, solution: it.solution,
+        at: new Date().toLocaleString("zh-CN"), times: 1
+      };
+      if (found) {
+        found.times = (found.times || 1) + 1;
+        found.mine = it.mine;
+        found.at = rec.at;
+      } else {
+        arr.push(rec);
+      }
+    });
+    localStorage.setItem(KEYW, JSON.stringify(arr.slice(-200)));
+  } catch (e) {}
+}
+
+function save(sec, right) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    arr.push({ set: el("material").dataset.set || document.title, score: right, total: QUIZ.length, sec: sec, at: new Date().toLocaleString("zh-CN") });
+    localStorage.setItem(KEY, JSON.stringify(arr.slice(-30)));
+    renderHistory();
+  } catch (e) {}
+}
+function renderHistory() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
+    const ul = el("history");
+    ul.innerHTML = "";
+    if (!arr.length) { ul.innerHTML = "<li><span>还没有记录</span><span></span></li>"; return; }
+    arr.slice().reverse().forEach(function (x) {
+      const li = document.createElement("li");
+      li.innerHTML = "<span>" + x.at + "　" + x.set + "</span><span>" + x.score + "/" + x.total + "　" + fmt(x.sec) + "</span>";
+      ul.appendChild(li);
+    });
+  } catch (e) {}
+}
+el("submit").addEventListener("click", submit);
+el("reset").addEventListener("click", function () { location.reload(); });
+render();
+renderHistory();
+st.timer = setInterval(tick, 1000);
+tick();
+</script>
+</body>
+</html>
