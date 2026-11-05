@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 """
 本地练习服务器：把答题记录直接写进仓库，方便复盘与分析。
+Windows / macOS / Linux 通用，只依赖标准库。
 
 启动后浏览器打开 http://127.0.0.1:8765/
 - 静态页面照常浏览（仓库根目录）
 - 练习页交卷时 POST /api/log，追加一行 JSON 到 04_错题与笔记/答题记录.jsonl
 - GET /api/log 返回全部记录（JSON 数组）
+
+端口：默认 8765，被占用时自动往后试 20 个，终端里会打印实际地址。也可以显式指定：
+
+    python 99_工具/serve.py 9000          # 命令行参数
+    QUIZ_PORT=9000 python 99_工具/serve.py # 环境变量（Windows: set QUIZ_PORT=9000）
+
+不想自动开浏览器：设 QUIZ_NO_BROWSER=1
 """
 import json
 import os
@@ -18,7 +26,10 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(ROOT, "04_错题与笔记")
 LOG_FILE = os.path.join(LOG_DIR, "答题记录.jsonl")
-PORT = int(os.environ.get("QUIZ_PORT", "8765"))
+
+HOST = "127.0.0.1"
+DEFAULT_PORT = int(os.environ.get("QUIZ_PORT", "8765"))
+PORT_TRIES = 20  # 端口被占用时，从默认端口往后最多再试这么多个
 
 CORS = {
     "Access-Control-Allow-Origin": "*",
@@ -97,26 +108,68 @@ class Handler(SimpleHTTPRequestHandler):
         pass
 
 
+def target_port():
+    """命令行参数优先，其次环境变量（已在 DEFAULT_PORT 里读过），最后默认 8765。"""
+    for arg in sys.argv[1:]:
+        if arg.startswith("-"):
+            continue
+        try:
+            return int(arg)
+        except ValueError:
+            print("端口参数不是数字，已忽略：%s" % arg)
+    return DEFAULT_PORT
+
+
+def pick_server(want):
+    """从 want 开始往后找一个能监听的端口，返回 (server, 端口, 第一个错误)。"""
+    first_error = None
+    for port in range(want, want + PORT_TRIES):
+        try:
+            return ThreadingHTTPServer((HOST, port), Handler), port, None
+        except OSError as e:
+            if first_error is None:
+                first_error = e
+    return None, None, first_error
+
+
+def wait_for_key(msg="按回车退出..."):
+    """只在真正的终端里等待，避免在 IDE、管道、计划任务里卡住。"""
+    try:
+        if sys.stdin and sys.stdin.isatty():
+            input(msg)
+    except (EOFError, OSError):
+        pass
+
+
 def main():
     os.chdir(ROOT)
-    url = "http://127.0.0.1:%d/" % PORT
-    try:
-        httpd = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    except OSError as e:
-        print("端口 %d 被占用或无法监听：%s" % (PORT, e))
-        print("可设置环境变量 QUIZ_PORT 换一个端口，例如：set QUIZ_PORT=8766")
-        input("按回车退出...")
-        return
+    want = target_port()
+    httpd, port, first_error = pick_server(want)
+
+    if httpd is None:
+        print("端口 %d-%d 都无法监听：%s" % (want, want + PORT_TRIES - 1, first_error))
+        print("换个端口再试，例如：python 99_工具/serve.py 9000")
+        wait_for_key()
+        return 1
+
+    url = "http://%s:%d/" % (HOST, port)
+    if port != want:
+        print("端口 %d 被占用，已自动改用 %d" % (want, port))
     print("练习服务器已启动：", url)
     print("答题记录写入：", LOG_FILE)
-    print("关闭此窗口即停止服务。")
+    print("按 Ctrl+C 或关闭此窗口即停止服务。", flush=True)
+
     if os.environ.get("QUIZ_NO_BROWSER") != "1":
         threading.Timer(0.8, lambda: webbrowser.open(url)).start()
+
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("\n已停止。")
+    finally:
+        httpd.server_close()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
