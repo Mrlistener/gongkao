@@ -219,8 +219,27 @@ function submit() {
   });
   save(sec, right);
   saveWrong(wrongFull);
+  postLog({
+    kind: "attempt",
+    set: el("material").dataset.set || document.title,
+    score: right,
+    total: QUIZ.length,
+    sec: sec,
+    wrong: wrongFull.map(function (w) { return { stem: w.stem, type: w.type, mine: w.mine, answer: w.answer }; })
+  });
   res.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+function postLog(obj) {
+  try {
+    if (location.protocol === "file:") return;
+    fetch("/api/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj)
+    }).catch(function () {});
+  } catch (e) {}
+}
+
 function saveWrong(items) {
   if (!items.length) return;
   try {
