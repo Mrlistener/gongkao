@@ -108,6 +108,13 @@ def main():
     if REQUIRE_GRASSROOTS and cols["grass"]:
         s = s[s[cols["grass"]].astype(str).str.contains("两年|2年|基层")]
 
+    # 排除乡镇、街道
+    unit_col = cols["unit"]
+    if unit_col:
+        bad = s[unit_col].astype(str).str.contains("乡镇|街道")
+        print("  排除乡镇/街道岗位:", int(bad.sum()))
+        s = s[~bad]
+
     if cols["num"]:
         s[cols["num"]] = pd.to_numeric(s[cols["num"]], errors="coerce")
         s = s[(s[cols["num"]] >= 1) & (s[cols["num"]] <= MAX_PEOPLE)]
