@@ -18,6 +18,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(ROOT, "04_错题与笔记")
 LOG_FILE = os.path.join(LOG_DIR, "答题记录.jsonl")
+SHENLUN_FILE = os.path.join(LOG_DIR, "申论作答.jsonl")
 PORT = int(os.environ.get("QUIZ_PORT", "8765"))
 
 CORS = {
@@ -25,6 +26,14 @@ CORS = {
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
 }
+
+
+def append_shenlun(obj):
+    os.makedirs(LOG_DIR, exist_ok=True)
+    if "at" not in obj:
+        obj["at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(SHENLUN_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
 def read_log():
@@ -89,6 +98,10 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError("body must be object")
         except Exception as e:
             self._json(400, {"error": str(e)})
+            return
+        if obj.get("kind") == "shenlun_answer":
+            append_shenlun(obj)
+            self._json(200, {"ok": True, "saved": "申论作答"})
             return
         append_log(obj)
         self._json(200, {"ok": True, "count": len(read_log())})

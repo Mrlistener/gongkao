@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>申论要点训练 · 第 1 套</title>
+<title>申论作答 · 第 1 套</title>
 <style>
 :root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb;--amber:#8a5a00;--amber-bg:#fdf4e3}
 *{box-sizing:border-box}
@@ -16,48 +16,40 @@ h1{font-size:22px;margin:0 0 6px}
 .material{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:15px;margin-bottom:18px}
 .material p{margin:0 0 10px}
 .material p:last-child{margin:0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 18px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px;margin-bottom:14px}
 .head{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
 .no{font-size:12px;background:var(--ink);color:#fff;border-radius:999px;padding:1px 9px}
 .ptype{font-size:12px;background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:1px 9px}
 .ask{font-size:15px;font-weight:600;margin:0 0 10px}
-textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;font-size:14px;resize:vertical;background:#fbfbfa}
+textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:9px;padding:12px 14px;font:inherit;font-size:14.5px;line-height:1.9;resize:vertical;background:#fbfbfa}
 textarea:focus{outline:none;border-color:#c9c5bd}
-.actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.foot{display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.foot .cnt{font-variant-numeric:tabular-nums}
+.foot .cnt.over{color:var(--red);font-weight:600}
 button{border-radius:9px;padding:9px 16px;font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
 button.dark{background:var(--ink);color:#fff;border:0}
-button:hover{border-color:#c9c5bd}
-.ref{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
-.ref.on{display:block}
-.ref h4{font-size:13px;color:var(--muted);font-weight:500;margin:0 0 8px}
-.pt{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:8px;font-size:14px;border:1px solid transparent;cursor:pointer}
-.pt:hover{background:#faf9f6}
-.pt.hit{background:var(--green-bg);border-color:#bfe3cd}
-.pt input{margin-top:6px}
-.pt .txt{flex:1}
-.pt .v{color:var(--muted);font-size:12.5px;white-space:nowrap;margin-top:2px}
-.tip{background:var(--amber-bg);color:var(--amber);border-radius:9px;padding:10px 12px;font-size:13px;margin-top:10px}
-.result{font-size:13.5px;margin-top:10px;color:var(--muted)}
-.result b{color:var(--ink)}
+button.done{background:var(--green-bg);color:var(--green);border-color:#bfe3cd}
+.tip{background:var(--amber-bg);color:var(--amber);border-radius:9px;padding:10px 12px;font-size:13px;margin:14px 0}
 .sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:16px;display:none}
 .sum.on{display:block}
-.sum .big{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.sum .big{font-size:28px;font-weight:700}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>申论要点训练 · 第 1 套</h1>
-  <p class="sub">只列要点，不写完整答案。先自己写，再点「对照参考答案」，勾出你写到的点。</p>
+  <h1>申论作答 · 第 1 套</h1>
+  <p class="sub">按题目要求写完整答案。写完点「提交」，会在对话里逐题批改（不用对照任何参考答案）。</p>
 
   <div class="bar">
-    <span>已完成 <b id="done">0</b> / 5</span>
-    <span>已得要点 <b id="got">0</b></span>
-    <span>满分要点 <b id="all">0</b></span>
+    <span>已提交 <b id="done">0</b> / 5</span>
+    <span>总字数 <b id="total">0</b></span>
     <span id="clock">00:00</span>
   </div>
 
   <section class="material" id="mat"></section>
   <main id="qs"></main>
+
+  <div class="tip">批改标准：要点覆盖（60%）、分条与条理（20%）、格式与结构（15%）、语言与字数（5%）。格式分是最容易白拿的，别丢。</div>
 
   <section class="sum" id="sum"></section>
 </div>
@@ -72,71 +64,13 @@ var MATERIAL = [
 ].join("");
 
 var QS = [
-  {
-    type: "归纳概括",
-    ask: "根据材料，概括 H 市推进基层综合行政执法改革的主要做法。（15 分，不超过 250 字）",
-    points: [
-      { t: "设立乡镇（街道）综合行政执法队，整合城管、市场监管、生态环境等 8 个领域执法事项，实行「一支队伍管执法」", v: 4 },
-      { t: "建立「街乡吹哨、部门报到」机制，明确 2 小时响应、24 小时到场处置的时限要求", v: 4 },
-      { t: "推行「首违不罚」清单，对 12 类轻微违法行为实行告知承诺、限期整改", v: 3 },
-      { t: "建立「执法回访」制度，对已处罚企业每季度回访一次", v: 2 },
-      { t: "动态调整执法事项清单，将噪声扰民、餐饮油烟等群众反映强烈的问题纳入重点", v: 1 },
-      { t: "开展执法队伍全员轮训，每周一次业务学习", v: 1 }
-    ],
-    tip: "概括题的得分点几乎全在材料里，按段落顺序扫：第一段「设立+整合」、第二段「吹哨报到」、第三段「首违不罚+回访」、第五段「动态调整+轮训」。第四段是问题，不是做法，写进去要扣分。"
-  },
-  {
-    type: "综合分析",
-    ask: "请谈谈对「处罚不是目的，让企业合规经营才是目的」这句话的理解。（20 分，不超过 300 字）",
-    points: [
-      { t: "点明这句话的含义：执法不是为了罚款创收，而是为了引导企业守法合规经营", v: 5 },
-      { t: "分析为什么：单纯处罚只能治标，容易造成「罚了又犯」；以合规为目标能从根本上减少违法", v: 5 },
-      { t: "结合材料印证：H 市推行「首违不罚」告知承诺、限期整改，建立执法回访制度，正是这一理念的体现", v: 5 },
-      { t: "提出落实路径：坚持处罚与教育相结合，完善配套制度，提升执法人员的服务意识与释法说理能力", v: 5 }
-    ],
-    tip: "综合分析题的标准结构是「是什么—为什么—怎么办」。只写「是什么」最多拿 5 分，三段齐全才拿满。材料里的具体做法要引用，否则判为「脱离材料」。"
-  },
-  {
-    type: "提出对策",
-    ask: "针对材料反映的问题，提出解决建议。（20 分，不超过 300 字）",
-    points: [
-      { t: "针对编制不足：盘活现有编制资源，通过跨部门调剂、购买服务等方式充实一线执法力量", v: 5 },
-      { t: "针对装备老旧：加大财政投入，配备取证设备，推进执法装备标准化、信息化", v: 5 },
-      { t: "针对「报到」流于形式：将部门报到情况纳入考核，建立通报和问责机制，明确到场处置的责任人", v: 5 },
-      { t: "针对态度生硬、解释不到位：开展文明执法培训，推行说理式执法，建立群众评价与投诉反馈渠道", v: 5 }
-    ],
-    tip: "对策题必须「一问题一对策」，材料里提了四个问题，就要写四条。每条建议要有主体和手段，只写「加强管理」「提高认识」不给分。"
-  },
-  {
-    type: "贯彻执行（应用文）",
-    ask: "假如你是 H 市司法局工作人员，请就本市「首违不罚」改革写一份工作简报，供市领导参阅。（25 分，不超过 400 字）",
-    points: [
-      { t: "标题：H 市推行「首违不罚」改革工作情况简报（或「关于……」式标题）", v: 4 },
-      { t: "开头概述背景与总体情况：改革时间、覆盖范围、目的", v: 4 },
-      { t: "主体分条写做法：12 类轻微违法行为清单、告知承诺、限期整改、执法回访", v: 8 },
-      { t: "写成效与问题：办结率等数据、企业合规情况；存在的困难", v: 4 },
-      { t: "结尾写下一步打算：动态调整清单、全员轮训", v: 3 },
-      { t: "落款与日期：H 市司法局 + 年月日（简报可不写称谓）", v: 2 }
-    ],
-    tip: "应用文的分是「格式分 + 内容分」两笔。标题、开头、分条、结尾、落款，缺一处扣一处。很多人内容写得很好，就是没写落款，直接丢 2 分。"
-  },
-  {
-    type: "文章写作（提纲）",
-    ask: "以「执法的力度与温度」为题，列出文章提纲：标题、总论点、三个分论点。（40 分）",
-    points: [
-      { t: "标题：执法的力度与温度（或含副标题的变体）", v: 4 },
-      { t: "开头点题：执法的力度是刚性约束，温度是柔性引导，二者统一于规范执法、服务发展", v: 6 },
-      { t: "分论点一：力度是底线——严格执法、依法办事，维护市场秩序和群众利益", v: 8 },
-      { t: "分论点二：温度是方法——首违不罚、说理式执法、执法回访，让企业感受到公平与善意", v: 8 },
-      { t: "分论点三：力度与温度统一于法治——刚柔并济，既不能「一刀切」，也不能「宽松软」", v: 8 },
-      { t: "结尾呼应：以法治为纲、以服务为本，让执法既有权威又有温度", v: 6 }
-    ],
-    tip: "提纲训练的是结构感。三个分论点必须是并列或递进关系，不能是同一句话的三种说法。写成「要加大力度、要加强温度、要统筹兼顾」这种，档次直接掉一档。"
-  }
+  { type: "归纳概括", ask: "根据材料，概括 H 市推进基层综合行政执法改革的主要做法。", req: "15 分，不超过 250 字", limit: 250 },
+  { type: "综合分析", ask: "请谈谈对「处罚不是目的，让企业合规经营才是目的」这句话的理解。", req: "20 分，不超过 300 字", limit: 300 },
+  { type: "提出对策", ask: "针对材料反映的问题，提出解决建议。", req: "20 分，不超过 300 字", limit: 300 },
+  { type: "贯彻执行", ask: "假如你是 H 市司法局工作人员，请就本市「首违不罚」改革写一份工作简报，供市领导参阅。", req: "25 分，不超过 400 字", limit: 400 },
+  { type: "文章写作", ask: "以「执法的力度与温度」为题，写一篇议论文。", req: "40 分，800–1000 字", limit: 1000 }
 ];
 
-var TOTAL_ALL = 0;
-var TOTAL_GOT = 0;
 var DONE = 0;
 var t0 = Date.now();
 
@@ -144,84 +78,78 @@ function el(id) { return document.getElementById(id); }
 function fmt(s) { var m = String(Math.floor(s / 60)).padStart(2, "0"); return m + ":" + String(s % 60).padStart(2, "0"); }
 function tick() { el("clock").textContent = fmt(Math.floor((Date.now() - t0) / 1000)); }
 
-function postLog(obj) {
+function post(obj) {
   try {
-    if (location.protocol === "file:") return;
-    fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj) }).catch(function () {});
-  } catch (e) {}
+    if (location.protocol === "file:") return Promise.resolve();
+    return fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj) });
+  } catch (e) { return Promise.resolve(); }
 }
 
 function render() {
   el("mat").innerHTML = MATERIAL;
-  var box = el("qs");
   var html = "";
   QS.forEach(function (q, qi) {
-    html += '<div class="card" id="c' + qi + '">';
+    html += '<div class="card">';
     html += '<div class="head"><span class="no">第 ' + (qi + 1) + ' 题</span><span class="ptype">' + q.type + '</span></div>';
     html += '<p class="ask">' + q.ask + '</p>';
-    html += '<textarea id="ta' + qi + '" placeholder="只列要点，一句话一条，不用写成文"></textarea>';
-    html += '<div class="actions"><button class="dark" data-ref="' + qi + '">对照参考答案</button></div>';
-    html += '<div class="ref" id="r' + qi + '"><h4>参考答案要点（勾选你写到的）</h4>';
-    q.points.forEach(function (p, pi) {
-      html += '<label class="pt" id="p' + qi + '_' + pi + '"><input type="checkbox" data-q="' + qi + '" data-p="' + pi + '"><span class="txt">' + p.t + '</span><span class="v">' + p.v + ' 分</span></label>';
-    });
-    html += '<div class="tip">' + q.tip + '</div>';
-    html += '<div class="actions"><button data-submit="' + qi + '">提交本题</button></div>';
-    html += '<div class="result" id="res' + qi + '"></div>';
-    html += '</div></div>';
+    html += '<div class="foot" style="margin:0 0 8px"><span>' + q.req + '</span></div>';
+    html += '<textarea id="ta' + qi + '" placeholder="直接写完整答案"></textarea>';
+    html += '<div class="foot"><span class="cnt" id="cnt' + qi + '">0 字</span><button class="dark" data-sub="' + qi + '">提交第 ' + (qi + 1) + ' 题</button><span id="st' + qi + '"></span></div>';
+    html += '</div>';
   });
-  box.innerHTML = html;
+  el("qs").innerHTML = html;
 
-  var btns = box.querySelectorAll("button[data-ref]");
+  QS.forEach(function (q, qi) {
+    var ta = el("ta" + qi);
+    ta.addEventListener("input", function () {
+      var n = ta.value.replace(/\s/g, "").length;
+      var c = el("cnt" + qi);
+      c.textContent = n + " 字" + (q.limit ? " / " + q.limit : "");
+      c.classList.toggle("over", n > q.limit * 1.1);
+      updateTotal();
+    });
+  });
+
+  var btns = document.querySelectorAll("button[data-sub]");
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function () {
-      var qi = this.getAttribute("data-ref");
-      el("r" + qi).classList.add("on");
-      this.style.display = "none";
+      var qi = parseInt(this.getAttribute("data-sub"), 10);
+      submit(qi, this);
     });
   }
-  var subs = box.querySelectorAll("button[data-submit]");
-  for (var j = 0; j < subs.length; j++) {
-    subs[j].addEventListener("click", function () {
-      var qi = parseInt(this.getAttribute("data-submit"), 10);
-      submit(qi);
-    });
-  }
-  var checks = box.querySelectorAll("input[type=checkbox]");
-  for (var k = 0; k < checks.length; k++) {
-    checks[k].addEventListener("change", function () {
-      var qi = this.getAttribute("data-q"), pi = this.getAttribute("data-p");
-      el("p" + qi + "_" + pi).classList.toggle("hit", this.checked);
-    });
-  }
-  QS.forEach(function (q) { q.points.forEach(function (p) { TOTAL_ALL += p.v; }); });
-  el("all").textContent = TOTAL_ALL;
   tick();
   setInterval(tick, 1000);
 }
 
-function submit(qi) {
-  var q = QS[qi];
-  var found = 0, score = 0, missed = [];
-  q.points.forEach(function (p, pi) {
-    var cb = document.querySelector('input[data-q="' + qi + '"][data-p="' + pi + '"]');
-    if (cb && cb.checked) { found++; score += p.v; }
-    else { missed.push(p.t); }
-  });
-  var qTotal = q.points.reduce(function (s, p) { return s + p.v; }, 0);
-  el("res" + qi).innerHTML = "本题：写到 <b>" + found + " / " + q.points.length + "</b> 个要点，得分约 <b>" + score + " / " + qTotal + "</b> 分" +
-    (missed.length ? "<br>漏掉的：" + missed.slice(0, 2).join("；") + (missed.length > 2 ? " 等 " + missed.length + " 条" : "") : "<br>全中。");
-  DONE++;
-  TOTAL_GOT += score;
-  el("done").textContent = DONE;
-  el("got").textContent = TOTAL_GOT;
-  postLog({ kind: "shenlun", set: "申论要点训练第1套", q: qi + 1, type: q.type, found: found, total: q.points.length, score: score });
-  if (DONE >= QS.length) {
-    var s = el("sum");
-    s.classList.add("on");
-    s.innerHTML = '<div>全部完成</div><div class="big">' + TOTAL_GOT + " / " + TOTAL_ALL + "</div><div class=\"tip\">要点命中率 " + Math.round(TOTAL_GOT * 100 / TOTAL_ALL) + "%。低于 60% 说明「找点」这一关还没过，先别急着写完整答案。</div>";
-    postLog({ kind: "shenlun_session", set: "申论要点训练第1套", got: TOTAL_GOT, all: TOTAL_ALL, sec: Math.floor((Date.now() - t0) / 1000) });
+function updateTotal() {
+  var t = 0;
+  for (var i = 0; i < QS.length; i++) {
+    var ta = el("ta" + i);
+    if (ta) t += ta.value.replace(/\s/g, "").length;
   }
+  el("total").textContent = t;
+}
+
+function submit(qi, btn) {
+  var q = QS[qi];
+  var ta = el("ta" + qi);
+  var text = ta.value.trim();
+  if (text.length < 20) { alert("太短了，先写完再提交"); return; }
+  var n = text.replace(/\s/g, "").length;
+  post({ kind: "shenlun_answer", set: "申论作答第1套", q: qi + 1, type: q.type, ask: q.ask, req: q.req, words: n, text: text })
+    .then(function () {
+      btn.textContent = "已提交";
+      btn.classList.add("done");
+      btn.disabled = true;
+      el("st" + qi).textContent = "已保存，等批改";
+      DONE++;
+      el("done").textContent = DONE;
+      if (DONE >= QS.length) {
+        var s = el("sum");
+        s.classList.add("on");
+        s.innerHTML = '<div>5 题全部提交</div><div class="big">去对话里说一声「批改」</div><div style="font-size:13px;color:#6b6b70;margin-top:6px">我会读 04_错题与笔记/申论作答.jsonl 逐题给分</div>';
+      }
+    });
 }
 
 render();
