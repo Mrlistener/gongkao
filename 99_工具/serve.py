@@ -21,6 +21,20 @@ LOG_FILE = os.path.join(LOG_DIR, "答题记录.jsonl")
 SHENLUN_FILE = os.path.join(LOG_DIR, "申论作答.jsonl")
 PORT = int(os.environ.get("QUIZ_PORT", "8765"))
 
+# 短地址：避免输入又长又难记的编码路径
+SHORTCUTS = {
+    "/mem": "/01_行测/04_资料分析/记忆卡.html",
+    "/flash": "/01_行测/04_资料分析/公式闪卡.html",
+    "/drill1": "/01_行测/04_资料分析/演练/第1套.html",
+    "/drill2": "/01_行测/04_资料分析/演练/公式选择2.html",
+    "/choose1": "/01_行测/04_资料分析/演练/公式选择1.html",
+    "/wrong": "/01_行测/04_资料分析/错题集.html",
+    "/concept": "/01_行测/04_资料分析/概念地图.md",
+    "/quiz": "/01_行测/04_资料分析/演练/概念小测.html",
+    "/sl1": "/02_申论/要点训练·第1套.html",
+    "/sl2025": "/02_申论/真题·2025国考执法卷.html",
+}
+
 CORS = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -81,6 +95,13 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        path = self.path.split("?")[0].rstrip("/") or "/"
+        if path in SHORTCUTS:
+            from urllib.parse import quote
+            self.send_response(302)
+            self.send_header("Location", quote(SHORTCUTS[path]))
+            self.end_headers()
+            return
         if self.path.split("?")[0] == "/api/log":
             self._json(200, read_log())
             return
