@@ -2,3 +2,11 @@
 {"kind": "attempt", "set": "公式选择训练 · 第 1 组", "score": 10, "total": 12, "sec": 330, "wrong": [{"stem": "2024 年新登记经营主体中，企业所占比重比上年上升还是下降？（企业 +11.4%，整体 +6.7%）", "type": "比重变化（方向）", "mine": 2, "answer": 0}, {"stem": "2024 年新登记个体工商户比企业多百分之几？", "type": "增长率（比较型）", "mine": 1, "answer": 0}], "at": "2026-11-05 11:09:35"}
 {"kind": "flash", "card": "pct", "q": "A 比 B 多百分之几", "ok": true, "at": "2026-11-09 21:49:03"}
 {"kind": "attempt", "set": "平均数变化 · 6 题", "score": 5, "total": 6, "sec": 2184, "wrong": [{"stem": "某局罚没款同比下降 12.6%，查处案件数同比增长 8.5%。户均罚没款比上年：", "type": "平均数变化（一降一升）", "mine": 2, "answer": 0}], "at": "2026-11-09 22:48:07"}
+{"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-10 17:37:39"}
+{"kind": "flash", "card": "share", "q": "求比重", "ok": true, "at": "2026-11-10 17:37:44"}
+{"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": false, "at": "2026-11-10 17:37:59"}
+{"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": false, "at": "2026-11-10 17:43:50"}
+{"kind": "flash", "card": "base_up", "q": "求基期量（增长型）", "ok": false, "at": "2026-11-10 17:44:08"}
+{"kind": "flash", "card": "avg_chg", "q": "求平均数变化率", "ok": true, "at": "2026-11-10 17:44:14"}
+{"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": false, "at": "2026-11-10 17:44:28"}
+{"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": false, "at": "2026-11-10 17:52:10"}

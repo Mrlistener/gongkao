@@ -6,7 +6,9 @@ Windows / macOS / Linux 通用，只依赖标准库。
 启动后浏览器打开 http://127.0.0.1:8765/
 - 静态页面照常浏览（仓库根目录）
 - 练习页交卷时 POST /api/log，追加一行 JSON 到 04_错题与笔记/答题记录.jsonl
-- GET /api/log 返回全部记录（JSON 数组）
+- 申论作答（kind=shenlun_answer）另存到 04_错题与笔记/申论作答.jsonl
+- GET /api/log 返回全部答题记录（JSON 数组）
+- 短地址：/flash /mem /drill1 /drill2 /choose1 /wrong /concept /quiz /sl1 /sl2025
 
 端口：默认 8765，被占用时自动往后试 20 个，终端里会打印实际地址。也可以显式指定：
 
@@ -22,20 +24,52 @@ import threading
 import webbrowser
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import quote
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(ROOT, "04_错题与笔记")
 LOG_FILE = os.path.join(LOG_DIR, "答题记录.jsonl")
+SHENLUN_FILE = os.path.join(LOG_DIR, "申论作答.jsonl")
 
 HOST = "127.0.0.1"
 DEFAULT_PORT = int(os.environ.get("QUIZ_PORT", "8765"))
 PORT_TRIES = 20  # 端口被占用时，从默认端口往后最多再试这么多个
+
+# 短地址：避免输入又长又难记的编码路径
+SHORTCUTS = {
+    "/mem": "/01_行测/04_资料分析/记忆卡.html",
+    "/flash": "/01_行测/04_资料分析/公式闪卡.html",
+    "/drill1": "/01_行测/04_资料分析/演练/第1套.html",
+    "/drill2": "/01_行测/04_资料分析/演练/公式选择2.html",
+    "/choose1": "/01_行测/04_资料分析/演练/公式选择1.html",
+    "/wrong": "/01_行测/04_资料分析/错题集.html",
+    "/concept": "/01_行测/04_资料分析/概念地图.md",
+    "/quiz": "/01_行测/04_资料分析/演练/概念小测.html",
+    "/sl1": "/02_申论/要点训练·第1套.html",
+    "/sl2025": "/02_申论/真题·2025国考执法卷.html",
+}
 
 CORS = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
 }
+
+
+def _append_jsonl(path, obj):
+    os.makedirs(LOG_DIR, exist_ok=True)
+    if "at" not in obj:
+        obj["at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
+
+def append_log(obj):
+    _append_jsonl(LOG_FILE, obj)
+
+
+def append_shenlun(obj):
+    _append_jsonl(SHENLUN_FILE, obj)
 
 
 def read_log():
@@ -52,14 +86,6 @@ def read_log():
             except json.JSONDecodeError:
                 continue
     return out
-
-
-def append_log(obj):
-    os.makedirs(LOG_DIR, exist_ok=True)
-    if "at" not in obj:
-        obj["at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -83,6 +109,12 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        path = self.path.split("?")[0].rstrip("/") or "/"
+        if path in SHORTCUTS:
+            self.send_response(302)
+            self.send_header("Location", quote(SHORTCUTS[path]))
+            self.end_headers()
+            return
         if self.path.split("?")[0] == "/api/log":
             self._json(200, read_log())
             return
@@ -100,6 +132,10 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError("body must be object")
         except Exception as e:
             self._json(400, {"error": str(e)})
+            return
+        if obj.get("kind") == "shenlun_answer":
+            append_shenlun(obj)
+            self._json(200, {"ok": True, "saved": "申论作答"})
             return
         append_log(obj)
         self._json(200, {"ok": True, "count": len(read_log())})
