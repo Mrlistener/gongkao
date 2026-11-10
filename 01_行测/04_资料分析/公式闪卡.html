@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>公式闪卡 · 循环</title>
+<title>公式闪卡 · 背诵 / 循环</title>
 <style>
 :root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
 .wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px}
 h1{font-size:22px;margin:0 0 6px}
-.sub{color:var(--muted);font-size:14px;margin:0 0 18px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin:0 0 18px}
+.tabs button{padding:8px 16px;font-size:13.5px;border-radius:99px;background:var(--card)}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;flex-wrap:wrap}
 .bar b{color:var(--ink);font-variant-numeric:tabular-nums}
 .prog{height:6px;background:#eceae4;border-radius:99px;overflow:hidden;margin-bottom:18px}
@@ -38,39 +41,76 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left}
 th{color:var(--muted);font-weight:500;font-size:12.5px;background:#f3f2ee}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 code{font-variant-numeric:tabular-nums}
+
+/* 背诵速览 */
+#quizView{display:none}
+#quizView.on{display:block}
+#revView{display:none}
+#revView.on{display:block}
+.revbar{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.revbar span{font-size:13px;color:var(--muted)}
+.revbar button{padding:8px 14px;font-size:13.5px}
+.rev .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.rev .card:hover{border-color:#cfcbc2}
+.rev .card .t{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rev .card .tag{font-size:11px;background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:1px 9px}
+.rev .card .m{font-size:12px;color:var(--red)}
+.rev .card .q{font-size:16px;font-weight:700;margin-top:6px}
+.rev .card .a{font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:var(--green);margin-top:6px;display:none;word-break:break-all}
+.rev .card .g{font-size:13px;color:#444;margin-top:8px;background:#f3f2ee;border-radius:8px;padding:8px 11px;display:none}
+.rev .card .g b{color:var(--ink)}
+.rev .card.open .a,.rev .card.open .g{display:block}
+.rev.show .card .a,.rev.show .card .g{display:block}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>公式闪卡 · 循环</h1>
-  <p class="sub">说对了才出队；没记住的排回队尾。12 张全部出队才算过一轮，每张卡的错次会跨天累计。</p>
+  <h1>公式闪卡</h1>
+  <p class="sub">两种用法：<b>背诵速览</b>——12 张摊开，点一下翻答案，适合先背熟；<b>循环测</b>——说对才出队，错了排到队尾，不再原地打转。</p>
 
-  <div class="bar">
-    <span>剩余 <b id="left">12</b> 张</span>
-    <span>已掌握 <b id="got">0</b> / 12</span>
-    <span>本次点选 <b id="taps">0</b> 次</span>
-    <span id="clock">00:00</span>
-  </div>
-  <div class="prog"><i id="pi" style="width:0%"></i></div>
-
-  <div class="board" id="board">
-    <div><span class="tag" id="tag">基期</span></div>
-    <div class="q" id="q">求基期量（增长型）</div>
-    <div class="a hide" id="a"></div>
-    <div class="g" id="g"></div>
-    <div class="note" id="note">先自己想，三秒说不出就点「没记住」</div>
-    <div class="miss" id="miss"></div>
+  <div class="tabs" id="tabs">
+    <button data-v="review" class="on">背诵速览</button>
+    <button data-v="quiz">循环测</button>
   </div>
 
-  <div class="actions" id="act1">
-    <button class="dark wide" id="reveal">揭晓式子</button>
-  </div>
-  <div class="actions" id="act2" style="display:none">
-    <button class="ok wide" id="yes">说对了，出队</button>
-    <button class="no wide" id="no">没记住，排回队尾</button>
+  <!-- 背诵速览 -->
+  <div id="revView" class="on">
+    <div class="revbar">
+      <button class="dark" id="revToggle">全部展开</button>
+      <span id="revTip">点单张卡片也能单独翻</span>
+    </div>
+    <div class="rev" id="revList"></div>
   </div>
 
-  <div class="done" id="done"></div>
+  <!-- 循环测 -->
+  <div id="quizView">
+    <div class="bar">
+      <span>剩余 <b id="left">12</b> 张</span>
+      <span>已掌握 <b id="got">0</b> / 12</span>
+      <span>本次点选 <b id="taps">0</b> 次</span>
+      <span id="clock">00:00</span>
+    </div>
+    <div class="prog"><i id="pi" style="width:0%"></i></div>
+
+    <div class="board" id="board">
+      <div><span class="tag" id="tag">基期</span></div>
+      <div class="q" id="q">求基期量（增长型）</div>
+      <div class="a hide" id="a"></div>
+      <div class="g" id="g"></div>
+      <div class="note" id="note">先自己想，三秒说不出就点「没记住」</div>
+      <div class="miss" id="miss"></div>
+    </div>
+
+    <div class="actions" id="act1">
+      <button class="dark wide" id="reveal">揭晓式子</button>
+    </div>
+    <div class="actions" id="act2" style="display:none">
+      <button class="ok wide" id="yes">说对了，出队</button>
+      <button class="no wide" id="no">没记住，排到队尾</button>
+    </div>
+
+    <div class="done" id="done"></div>
+  </div>
 
   <p class="hint">跨天还错的卡，通常问题出在理解，不在记忆：回 <a href="../记忆卡.html">记忆卡</a> 把那张卡的解释再读一遍。</p>
 </div>
@@ -93,15 +133,46 @@ var CARDS = [
 
 var LS = "kaogong_flash_v1";
 var queue = [], cur = null, got = 0, taps = 0, t0 = 0, timer = null, history = {};
+var quizStarted = false, allOpen = false;
 
 function el(id) { return document.getElementById(id); }
 function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function fmt(s) { var m = String(Math.floor(s / 60)).padStart(2, "0"); return m + ":" + String(s % 60).padStart(2, "0"); }
 function tick() { el("clock").textContent = fmt(Math.floor((Date.now() - t0) / 1000)); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
 function loadHist() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
 function saveHist() { try { localStorage.setItem(LS, JSON.stringify(history)); } catch (e) {} }
 
+/* ---------- 背诵速览 ---------- */
+function buildReview() {
+  var html = "";
+  CARDS.forEach(function (c, i) {
+    var h = history[c.id] || { ok: 0, miss: 0 };
+    html += '<div class="card" data-i="' + i + '">' +
+      '<div class="t"><span class="tag">' + esc(c.tag) + '</span>' +
+      '<span class="m">' + (h.miss ? "错过 " + h.miss + " 次" : "") + '</span></div>' +
+      '<div class="q">' + esc(c.q) + '</div>' +
+      '<div class="a">' + esc(c.a) + '</div>' +
+      '<div class="g">' + c.g + '</div></div>';
+  });
+  el("revList").innerHTML = html;
+  el("revList").classList.toggle("show", allOpen);
+  el("revToggle").textContent = allOpen ? "全部收起" : "全部展开";
+}
+
+function showView(v) {
+  var btns = document.querySelectorAll("#tabs button");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle("on", btns[i].getAttribute("data-v") === v);
+  }
+  el("revView").classList.toggle("on", v === "review");
+  el("quizView").classList.toggle("on", v === "quiz");
+  if (v === "review") { buildReview(); }
+  if (v === "quiz" && !quizStarted) { quizStarted = true; init(); }
+}
+
+/* ---------- 循环测 ---------- */
 function init() {
   history = loadHist();
   queue = shuffle(CARDS.slice());
@@ -156,8 +227,8 @@ function answer(ok) {
   } else {
     h.miss++; history[cur.id] = h; saveHist();
     var c = queue.shift();
-    var pos = Math.min(queue.length, 2 + Math.floor(Math.random() * 3));
-    queue.splice(pos, 0, c);
+    // 排到队尾：先把别的 11 张过完，再回来看这张，不在原地打转
+    queue.push(c);
     postLog({ kind: "flash", card: cur.id, q: cur.q, ok: false });
   }
   if (queue.length) { next(); } else { finish(); }
@@ -171,7 +242,7 @@ function finish() {
   CARDS.forEach(function (c) {
     var h = history[c.id] || { ok: 0, miss: 0 };
     totalMiss += h.miss;
-    rows += "<tr><td>" + c.q + "</td><td class='n'>" + h.miss + "</td><td class='n'>" + h.ok + "</td></tr>";
+    rows += "<tr><td>" + esc(c.q) + "</td><td class='n'>" + h.miss + "</td><td class='n'>" + h.ok + "</td></tr>";
   });
   el("board").style.display = "none";
   el("act1").style.display = "none";
@@ -193,10 +264,29 @@ function postLog(obj) {
   } catch (e) {}
 }
 
+/* ---------- 事件 ---------- */
+document.getElementById("tabs").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (b) { showView(b.getAttribute("data-v")); }
+});
+
+el("revToggle").addEventListener("click", function () {
+  allOpen = !allOpen;
+  el("revList").classList.toggle("show", allOpen);
+  el("revToggle").textContent = allOpen ? "全部收起" : "全部展开";
+});
+
+el("revList").addEventListener("click", function (e) {
+  var c = e.target.closest(".card");
+  if (c) { c.classList.toggle("open"); }
+});
+
 el("reveal").addEventListener("click", reveal);
 el("yes").addEventListener("click", function () { answer(true); });
 el("no").addEventListener("click", function () { answer(false); });
-init();
+
+history = loadHist();
+buildReview();
 </script>
 </body>
 </html>
