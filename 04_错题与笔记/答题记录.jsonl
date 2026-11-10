@@ -10,3 +10,10 @@
 {"kind": "flash", "card": "avg_chg", "q": "求平均数变化率", "ok": true, "at": "2026-11-10 17:44:14"}
 {"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": false, "at": "2026-11-10 17:44:28"}
 {"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": false, "at": "2026-11-10 17:52:10"}
+{"kind": "flash", "card": "rate", "q": "求增长率", "ok": true, "at": "2026-11-10 22:45:11"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": false, "at": "2026-11-10 22:56:30"}
+{"kind": "flash", "card": "pct", "q": "A 比 B 多百分之几", "ok": true, "at": "2026-11-10 22:56:37"}
+{"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-10 22:56:39"}
+{"kind": "flash", "card": "base_down", "q": "求基期量（下降型）", "ok": false, "at": "2026-11-10 22:59:14"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": false, "at": "2026-11-10 22:59:18"}
+{"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": false, "at": "2026-11-10 23:01:02"}
