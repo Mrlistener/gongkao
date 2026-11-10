@@ -9,3 +9,12 @@ desktop.ini
 # 临时
 *.tmp
 *.log
+# 真题资料包（体积大，不进版本库）
+真题/
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+!冲刺打卡表.xlsx
+*.downloading
