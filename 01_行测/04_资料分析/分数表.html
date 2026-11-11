@@ -15,16 +15,17 @@ h1{font-size:21px;margin:0 0 6px}
 button{border-radius:9px;padding:9px 16px;font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
 button.dark{background:var(--ink);color:#fff;border:0}
 table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
-th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center}
 th{background:#f3f2ee;font-size:13px;color:#444;font-weight:600}
-td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace}
+th.num{text-align:center}
+td.num{text-align:center;font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace}
 td.frac{font-weight:700}
 td.pct{font-variant-numeric:tabular-nums}
 tr.g1 td{background:#f4f9ff}
 tr.g2 td{background:#fffdf4}
 tr.g3 td{background:#fff}
 .hide td.num, .hide td.pct{color:transparent;position:relative}
-.hide td.num::after, .hide td.pct::after{content:"?";color:#c4c0b8;position:absolute;right:12px}
+.hide td.num::after, .hide td.pct::after{content:"?";color:#c4c0b8;position:absolute;left:0;right:0;text-align:center}
 .hide td.pct::after{left:12px;right:auto}
 .legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin:10px 0 16px;flex-wrap:wrap}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
@@ -40,6 +41,13 @@ tr.g3 td{background:#fff}
   <h1>特征分数表</h1>
   <p class="sub">资料分析里，看到百分数就换成分数——增长量一步出结果。</p>
 
+  <div class="tips" style="margin:0 0 14px">
+    <h3>两列数字是干什么的</h3>
+    <p style="margin:4px 0"><b>第三列「增长量 = 现期 ÷」</b>：增长率是这张表的分数时，<b>增长量 = 今年数 ÷ 这个除数</b>。<br>例：涨 25%（即 1/4），今年 120 万 → 增长量 = 120 ÷ 5 = 24 万。</p>
+    <p style="margin:4px 0"><b>第四列「基期 = 现期 ×」</b>：求去年数时，<b>基期 = 今年数 × 这个系数</b>。<br>例：涨 25%，今年 120 万 → 去年 = 120 × 0.8 = 96 万。</p>
+    <p style="margin:4px 0;color:#6b6b70">两列都是「今年数」乘或除，不用先算增长率。</p>
+  </div>
+
   <div class="toolbar">
     <button class="dark" id="toggle">遮住答案</button>
     <button id="shuffle">打乱顺序自测</button>
@@ -53,7 +61,7 @@ tr.g3 td{background:#fff}
 
   <table id="tb">
     <thead>
-      <tr><th>分数</th><th>百分数</th><th class="num">增长量 ÷</th><th class="num">基期 ×</th></tr>
+      <tr><th>分数</th><th>百分数（r）</th><th class="num">增长量 = 现期 ÷</th><th class="num">基期 = 现期 ×</th></tr>
     </thead>
     <tbody>
       <tr class="g1"><td class="frac">1/2</td><td class="pct">50%</td><td class="num">÷3</td><td class="num">0.667</td></tr>
