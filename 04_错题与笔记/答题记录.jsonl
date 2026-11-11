@@ -17,3 +17,7 @@
 {"kind": "flash", "card": "base_up", "q": "求基期量（增长型）", "ok": true, "at": "2026-11-11 10:11:57"}
 {"kind": "flash", "card": "avg", "q": "求平均数（户均/人均）", "ok": true, "at": "2026-11-11 10:12:02"}
 {"kind": "flash", "card": "base_down", "q": "求基期量（下降型）", "ok": true, "at": "2026-11-11 10:12:05"}
+{"kind": "flash", "card": "delta", "q": "求增长量", "ok": false, "at": "2026-11-11 10:26:06"}
+{"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": true, "at": "2026-11-11 10:26:19"}
+{"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": true, "at": "2026-11-11 10:51:31"}
+{"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-11 10:51:34"}
