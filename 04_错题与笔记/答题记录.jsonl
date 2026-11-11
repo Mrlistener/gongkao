@@ -21,3 +21,8 @@
 {"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": true, "at": "2026-11-11 10:26:19"}
 {"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": true, "at": "2026-11-11 10:51:31"}
 {"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-11 10:51:34"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": false, "at": "2026-11-11 13:43:19"}
+{"kind": "flash", "card": "delta", "q": "求增长量", "ok": false, "at": "2026-11-11 13:43:35"}
+{"kind": "flash", "card": "rate", "q": "求增长率", "ok": true, "at": "2026-11-11 13:43:39"}
+{"kind": "flash", "card": "pct", "q": "A 比 B 多百分之几", "ok": true, "at": "2026-11-11 13:43:44"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": false, "at": "2026-11-11 14:01:33"}
