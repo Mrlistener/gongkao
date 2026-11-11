@@ -10,7 +10,7 @@ desktop.ini
 *.tmp
 *.log
 # 真题资料包（体积大，不进版本库）
-真题/
+/真题/
 *.pdf
 *.doc
 *.docx
