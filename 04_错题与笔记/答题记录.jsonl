@@ -92,3 +92,17 @@
 {"kind": "flash", "card": "share", "q": "求比重", "ok": true, "at": "2026-11-11 17:16:08"}
 {"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": true, "at": "2026-11-11 17:16:11"}
 {"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-11 17:16:13"}
+{"kind": "flash", "card": "avg", "q": "求平均数（户均/人均）", "ok": true, "at": "2026-11-11 17:22:41"}
+{"kind": "flash", "card": "delta", "q": "求增长量（今年减去年）", "ok": true, "at": "2026-11-11 17:22:56"}
+{"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": true, "at": "2026-11-11 17:23:14"}
+{"kind": "flash", "card": "share", "q": "求比重", "ok": true, "at": "2026-11-11 17:23:17"}
+{"kind": "flash", "card": "base_down", "q": "求基期量（下降型）", "ok": true, "at": "2026-11-11 17:23:24"}
+{"kind": "flash", "card": "rate", "q": "求增长率", "ok": true, "at": "2026-11-11 17:23:31"}
+{"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": true, "at": "2026-11-11 17:23:33"}
+{"kind": "flash", "card": "pct", "q": "A 比 B 多百分之几", "ok": true, "at": "2026-11-11 17:23:36"}
+{"kind": "flash", "card": "base_up", "q": "求基期量（增长型）", "ok": true, "at": "2026-11-11 17:23:41"}
+{"kind": "flash", "card": "times", "q": "A 是 B 的几倍", "ok": true, "at": "2026-11-11 17:23:43"}
+{"kind": "flash", "card": "avg_chg", "q": "求平均数变化率", "ok": true, "at": "2026-11-11 17:23:49"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": false, "at": "2026-11-11 17:26:36"}
+{"kind": "flash", "card": "share_amp", "q": "求比重变化幅度", "ok": true, "at": "2026-11-11 17:26:50"}
+{"kind": "flash_session", "taps": 13, "sec": 262, "misses": 1, "at": "2026-11-11 17:26:50"}

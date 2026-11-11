@@ -43,11 +43,11 @@ code{font-variant-numeric:tabular-nums}
 <body>
 <div class="wrap">
   <h1>公式闪卡 · 循环</h1>
-  <p class="sub">说对了才出队；没记住的排回队尾。12 张全部出队才算过一轮，每张卡的错次会跨天累计。</p>
+  <p class="sub">说对了才出队；没记住的排回队尾。16 张全部出队才算过一轮，每张卡的错次会跨天累计。</p>
 
   <div class="bar">
     <span>剩余 <b id="left">12</b> 张</span>
-    <span>已掌握 <b id="got">0</b> / 12</span>
+    <span>已掌握 <b id="got">0</b> / 16</span>
     <span>本次点选 <b id="taps">0</b> 次</span>
     <span id="clock">00:00</span>
   </div>
@@ -88,7 +88,11 @@ var CARDS = [
   { id: "avg", q: "求平均数（户均/人均）", a: "总量 ÷ 个数", g: "户均＝罚没款÷案件数　人均＝收入÷人数", tag: "平均数" },
   { id: "avg_chg", q: "求平均数变化率", a: "(1 + a) ÷ (1 + b) - 1", g: "先定谁是分子：户均＝罚没款÷案件数，所以 <b>a</b>＝罚没款增速 -12.6%，<b>b</b>＝案件数增速 +8.5%　代入：0.874÷1.085-1≈-19.4%", tag: "平均数" },
   { id: "times", q: "A 是 B 的几倍", a: "A ÷ B", g: "直接除，不减 1", tag: "倍数" },
-  { id: "pct", q: "A 比 B 多百分之几", a: "(A - B) ÷ B", g: "分母跟「<b>比</b>」字后面那个数走", tag: "比较" }
+  { id: "pct", q: "A 比 B 多百分之几", a: "(A - B) ÷ B", g: "分母跟「<b>比</b>」字后面那个数走", tag: "比较" },
+  { id: "whole", q: "已知部分与比重，求整体", a: "部分 ÷ 比重", g: "比重 = 部分 ÷ 整体，反过来整体 = 部分 ÷ 比重。<br>例：企业 4.2 万，占比 32.8% → 整体 = 4.2 ÷ 0.328 ≈ 12.8", tag: "比重" },
+  { id: "interval", q: "隔年增长率（隔一年）", a: "r1 + r2 + r1 × r2", g: "<b>r1</b>、<b>r2</b> 是相邻两年的增速。后两项通常很小，先算 r1+r2，再加 r1×r2。<br>例：0.1+0.2+0.02 = 0.32（32%）", tag: "增长率" },
+  { id: "annual", q: "年均增长率", a: "(现期 ÷ 基期)^(1/n) − 1", g: "n 是年数（间隔几年，不是第几年）。考场上多为比较大小，少硬算。<br>估算：翻番约每年 7.2%（72 法则）", tag: "增长率" },
+  { id: "delta_cmp", q: "比较谁的增长量大", a: "比 现期 × r（不除 (1+r)）", g: "只比大小，两个 r 接近时直接比乘积即可，不必算出结果。<br>严格式仍要除 (1+r)，但同数量级下省略不影响排序", tag: "增长量" }
 ];
 
 var LS = "kaogong_flash_v1";
@@ -178,9 +182,9 @@ function finish() {
   el("act2").style.display = "none";
   var d = el("done");
   d.classList.add("on");
-  d.innerHTML = '<div class="board" style="min-height:auto"><div class="q">12 张全部出队</div>' +
+  d.innerHTML = '<div class="board" style="min-height:auto"><div class="q">全部出队</div>' +
     '<div class="note">本次点选 ' + taps + " 次　用时 " + fmt(sec) + "　累计错误 " + totalMiss + " 次</div>" +
-    '<div style="margin-top:18px"><button class="dark" id="again">再来一轮（全部 12 张）</button></div></div>' +
+    '<div style="margin-top:18px"><button class="dark" id="again">再来一轮（全部）</button></div></div>' +
     "<table><tr><th>卡片</th><th class='n'>累计错</th><th class='n'>累计对</th></tr>" + rows + "</table>";
   el("again").addEventListener("click", function () { init(); });
   postLog({ kind: "flash_session", taps: taps, sec: sec, misses: totalMiss });
