@@ -51,6 +51,7 @@ tr.g3 td{background:#fff}
   <div class="toolbar">
     <button class="dark" id="toggle">遮住答案</button>
     <button id="shuffle">打乱顺序自测</button>
+    <button id="goquiz">去答题自测（18 题）</button>
   </div>
 
   <div class="legend">
@@ -104,6 +105,7 @@ el("toggle").addEventListener("click", function(){
   var on = tb.classList.toggle("hide");
   this.textContent = on ? "显示答案" : "遮住答案";
 });
+el("goquiz").addEventListener("click", function(){ location.href = "演练/特征分数自测.html"; });
 el("shuffle").addEventListener("click", function(){
   var body = tb.querySelector("tbody");
   var rows = Array.prototype.slice.call(body.querySelectorAll("tr"));
