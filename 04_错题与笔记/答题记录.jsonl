@@ -8,3 +8,12 @@
 {"kind": "flash", "card": "avg_chg", "q": "求平均数变化率", "ok": true, "at": "2026-11-10 17:44:14"}
 {"kind": "flash", "card": "share_dir", "q": "判断比重升降", "ok": false, "at": "2026-11-10 17:44:28"}
 {"kind": "flash", "card": "present", "q": "已知基期和增速，求现期", "ok": false, "at": "2026-11-10 17:52:10"}
+{"kind": "flash", "card": "delta", "q": "求增长量", "ok": false, "at": "2026-11-11 09:52:58"}
+{"kind": "flash", "card": "base_up", "q": "求基期量（增长型）", "ok": false, "at": "2026-11-11 09:53:10"}
+{"kind": "flash", "card": "share", "q": "求比重", "ok": true, "at": "2026-11-11 09:53:17"}
+{"kind": "flash", "card": "base_down", "q": "求基期量（下降型）", "ok": false, "at": "2026-11-11 09:53:24"}
+{"kind": "flash", "card": "avg_chg", "q": "求平均数变化率", "ok": true, "at": "2026-11-11 10:09:33"}
+{"kind": "flash", "card": "delta", "q": "求增长量", "ok": false, "at": "2026-11-11 10:11:46"}
+{"kind": "flash", "card": "base_up", "q": "求基期量（增长型）", "ok": true, "at": "2026-11-11 10:11:57"}
+{"kind": "flash", "card": "avg", "q": "求平均数（户均/人均）", "ok": true, "at": "2026-11-11 10:12:02"}
+{"kind": "flash", "card": "base_down", "q": "求基期量（下降型）", "ok": true, "at": "2026-11-11 10:12:05"}
