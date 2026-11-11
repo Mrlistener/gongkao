@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2025 国考行测 · 资料分析真题</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--blue:#1f5fbf;--blue-bg:#eaf1fb;--amber:#8a5a00;--amber-bg:#fdf4e3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.8}
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 90px}
+h1{font-size:21px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+.bar b{color:var(--ink);font-variant-numeric:tabular-nums}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:16px}
+.paper summary{cursor:pointer;font-weight:600;font-size:14px;padding:6px 4px}
+figure{margin:10px 0}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px}
+figcaption{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.qno{font-size:13px;background:var(--ink);color:#fff;border-radius:999px;padding:1px 9px;margin-right:8px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.opt{border:1px solid var(--line);border-radius:9px;padding:8px 18px;cursor:pointer;background:#fbfbfa;font-size:14px}
+.opt.sel{border-color:var(--blue);background:var(--blue-bg)}
+.opt.ok{border-color:var(--green);background:var(--green-bg)}
+.opt.no{border-color:var(--red);background:var(--red-bg)}
+.tip{background:var(--amber-bg);color:var(--amber);border-radius:9px;padding:10px 12px;font-size:13px;margin:12px 0}
+button{border-radius:10px;padding:12px 20px;font:inherit;font-size:15px;cursor:pointer;border:1px solid var(--line);background:var(--card)}
+button.dark{background:var(--ink);color:#fff;border:0}
+.res{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;display:none}
+.res.on{display:block}
+.big{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums}
+.wronglist{font-size:14px;margin:8px 0 0;padding-left:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>2025 国考行测 · 资料分析（真题）</h1>
+  <p class="sub">题目共 20 道（111–130）。材料在下面的原卷图里，答题卡在下方。<b>建议限时 25 分钟</b>。</p>
+  <div class="bar"><span>已答 <b id="done">0</b> / 20</span><span id="clock">00:00</span></div>
+
+  <details class="paper" open>
+    <summary>点开看原卷（第 20–25 页，含四篇材料）</summary>
+    <figure><a href="2025国考行测/p-20.png" target="_blank"><img src="2025国考行测/p-20.png" alt="第-20页"></a><figcaption>第 -20 页</figcaption></figure><figure><a href="2025国考行测/p-21.png" target="_blank"><img src="2025国考行测/p-21.png" alt="第-21页"></a><figcaption>第 -21 页</figcaption></figure><figure><a href="2025国考行测/p-22.png" target="_blank"><img src="2025国考行测/p-22.png" alt="第-22页"></a><figcaption>第 -22 页</figcaption></figure><figure><a href="2025国考行测/p-23.png" target="_blank"><img src="2025国考行测/p-23.png" alt="第-23页"></a><figcaption>第 -23 页</figcaption></figure><figure><a href="2025国考行测/p-24.png" target="_blank"><img src="2025国考行测/p-24.png" alt="第-24页"></a><figcaption>第 -24 页</figcaption></figure><figure><a href="2025国考行测/p-25.png" target="_blank"><img src="2025国考行测/p-25.png" alt="第-25页"></a><figcaption>第 -25 页</figcaption></figure>
+  </details>
+
+  <div class="tip">做法：先在图里读材料，再在下面点答案。四篇材料分别对应 111–115、116–120、121–125、126–130。</div>
+
+  <main id="qs"></main>
+  <button class="dark" id="submit">交卷</button>
+  <section class="res" id="res"></section>
+</div>
+<script>
+var QS = [["111", "A"], ["112", "C"], ["113", "D"], ["114", "A"], ["115", "D"], ["116", "B"], ["117", "A"], ["118", "D"], ["119", "C"], ["120", "D"], ["121", "C"], ["122", "A"], ["123", "B"], ["124", "D"], ["125", "B"], ["126", "A"], ["127", "D"], ["128", "B"], ["129", "C"], ["130", "C"]];
+var picked = {};
+var t0 = Date.now();
+function el(id){return document.getElementById(id);}
+function fmt(s){var m=String(Math.floor(s/60)).padStart(2,"0");return m+":"+String(s%60).padStart(2,"0");}
+setInterval(function(){el("clock").textContent=fmt(Math.floor((Date.now()-t0)/1000));},1000);
+function post(o){try{if(location.protocol==="file:")return;fetch("/api/log",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)}).catch(function(){});}catch(e){}}
+
+var html="";
+QS.forEach(function(q,i){
+  html+='<div class="card"><span class="qno">'+q[0]+'</span><div class="opts">';
+  ["A","B","C","D"].forEach(function(c){
+    html+='<span class="opt" data-i="'+i+'" data-c="'+c+'">'+c+'</span>';
+  });
+  html+='</div></div>';
+});
+el("qs").innerHTML=html;
+
+document.querySelectorAll(".opt").forEach(function(b){
+  b.addEventListener("click",function(){
+    var i=this.getAttribute("data-i"), c=this.getAttribute("data-c");
+    picked[i]=c;
+    document.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.remove("sel");});
+    this.classList.add("sel");
+    el("done").textContent=Object.keys(picked).length;
+  });
+});
+
+el("submit").addEventListener("click",function(){
+  var right=0, wrong=[];
+  QS.forEach(function(q,i){
+    var mine=picked[i], ans=q[1];
+    var opts=document.querySelectorAll('.opt[data-i="'+i+'"]');
+    opts.forEach(function(x){
+      x.classList.remove("sel");
+      if(x.getAttribute("data-c")===ans) x.classList.add("ok");
+      else if(mine && x.getAttribute("data-c")===mine) x.classList.add("no");
+    });
+    if(mine===ans) right++; else wrong.push(q[0]+"（你选"+(mine||"未答")+"，正确"+ans+"）");
+  });
+  var sec=Math.floor((Date.now()-t0)/1000);
+  var r=el("res"); r.classList.add("on");
+  r.innerHTML='<div class="big">'+right+' / 20</div><div style="color:#6b6b70;font-size:13px">用时 '+fmt(sec)+'　得分率 '+Math.round(right*5)+'%</div>'+
+    (wrong.length?'<ul class="wronglist">'+wrong.map(function(w){return "<li>"+w+"</li>";}).join("")+'</ul>':'<p>全对。</p>');
+  post({kind:"zlfx",set:"2025国考行测·资料分析",score:right,total:20,sec:sec,wrong:wrong});
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+});
+</script>
+</body>
+</html>

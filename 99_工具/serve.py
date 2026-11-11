@@ -47,6 +47,8 @@ SHORTCUTS = {
     "/quiz": "/01_行测/04_资料分析/演练/概念小测.html",
     "/sl1": "/02_申论/要点训练·第1套.html",
     "/sl2025": "/02_申论/真题·2025国考执法卷.html",
+    "/zl2025": "/01_行测/04_资料分析/真题/2025国考行测·资料分析.html",
+    "/fraction": "/01_行测/04_资料分析/分数表.html",
 }
 
 CORS = {
@@ -139,6 +141,12 @@ class Handler(SimpleHTTPRequestHandler):
             return
         append_log(obj)
         self._json(200, {"ok": True, "count": len(read_log())})
+
+    def end_headers(self):
+        if self.path.split("?")[0].endswith((".html", ".json")) or self.path == "/":
+            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+            self.send_header("Pragma", "no-cache")
+        super().end_headers()
 
     def log_message(self, fmt, *args):
         pass

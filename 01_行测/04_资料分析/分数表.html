@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>特征分数表</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--blue:#1f5fbf;--blue-bg:#eaf1fb;--amber:#8a5a00;--amber-bg:#fdf4e3;--green:#1e7a4b;--green-bg:#eaf6ef}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:26px 18px 80px}
+h1{font-size:21px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+button{border-radius:9px;padding:9px 16px;font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+button.dark{background:var(--ink);color:#fff;border:0}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center}
+th{background:#f3f2ee;font-size:13px;color:#444;font-weight:600}
+th.num{text-align:center}
+td.num{text-align:center;font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace}
+td.frac{font-weight:700}
+td.pct{font-variant-numeric:tabular-nums}
+tr.g1 td{background:#f4f9ff}
+tr.g2 td{background:#fffdf4}
+tr.g3 td{background:#fff}
+.hide td.num, .hide td.pct{color:transparent;position:relative}
+.hide td.num::after, .hide td.pct::after{content:"?";color:#c4c0b8;position:absolute;left:0;right:0;text-align:center}
+.hide td.pct::after{left:12px;right:auto}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin:10px 0 16px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.tips{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:14px}
+.tips h3{font-size:14px;margin:0 0 8px}
+.tips ol{margin:0;padding-left:20px}
+.tips li{margin:4px 0}
+.hint{background:var(--amber-bg);color:var(--amber);border-radius:9px;padding:10px 12px;font-size:13px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>特征分数表</h1>
+  <p class="sub">资料分析里，看到百分数就换成分数——增长量一步出结果。</p>
+
+  <div class="tips" style="margin:0 0 14px">
+    <h3>两列数字是干什么的</h3>
+    <p style="margin:4px 0"><b>第三列「增长量 = 现期 ÷」</b>：增长率是这张表的分数时，<b>增长量 = 今年数 ÷ 这个除数</b>。<br>例：涨 25%（即 1/4），今年 120 万 → 增长量 = 120 ÷ 5 = 24 万。</p>
+    <p style="margin:4px 0"><b>第四列「基期 = 现期 ×」</b>：求去年数时，<b>基期 = 今年数 × 这个系数</b>。<br>例：涨 25%，今年 120 万 → 去年 = 120 × 0.8 = 96 万。</p>
+    <p style="margin:4px 0;color:#6b6b70">两列都是「今年数」乘或除，不用先算增长率。</p>
+  </div>
+
+  <div class="toolbar">
+    <button class="dark" id="toggle">遮住答案</button>
+    <button id="shuffle">打乱顺序自测</button>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#f4f9ff;border:1px solid #cfe3fa"></i>第一批（必背，覆盖一半题）</span>
+    <span><i style="background:#fffdf4;border:1px solid #f0e2bd"></i>第二批</span>
+    <span><i style="background:#fff;border:1px solid #ddd"></i>第三批（尾巴）</span>
+  </div>
+
+  <table id="tb">
+    <thead>
+      <tr><th>分数</th><th>百分数（r）</th><th class="num">增长量 = 现期 ÷</th><th class="num">基期 = 现期 ×</th></tr>
+    </thead>
+    <tbody>
+      <tr class="g1"><td class="frac">1/2</td><td class="pct">50%</td><td class="num">÷3</td><td class="num">0.667</td></tr>
+      <tr class="g2"><td class="frac">1/3</td><td class="pct">33.3%</td><td class="num">÷4</td><td class="num">0.750</td></tr>
+      <tr class="g1"><td class="frac">1/4</td><td class="pct">25%</td><td class="num">÷5</td><td class="num">0.800</td></tr>
+      <tr class="g1"><td class="frac">1/5</td><td class="pct">20%</td><td class="num">÷6</td><td class="num">0.833</td></tr>
+      <tr class="g1"><td class="frac">1/6</td><td class="pct">16.7%</td><td class="num">÷7</td><td class="num">0.857</td></tr>
+      <tr class="g2"><td class="frac">1/7</td><td class="pct">14.3%</td><td class="num">÷8</td><td class="num">0.875</td></tr>
+      <tr class="g1"><td class="frac">1/8</td><td class="pct">12.5%</td><td class="num">÷9</td><td class="num">0.889</td></tr>
+      <tr class="g2"><td class="frac">1/9</td><td class="pct">11.1%</td><td class="num">÷10</td><td class="num">0.900</td></tr>
+      <tr class="g1"><td class="frac">1/10</td><td class="pct">10%</td><td class="num">÷11</td><td class="num">0.909</td></tr>
+      <tr class="g3"><td class="frac">1/11</td><td class="pct">9.1%</td><td class="num">÷12</td><td class="num">0.917</td></tr>
+      <tr class="g3"><td class="frac">1/12</td><td class="pct">8.3%</td><td class="num">÷13</td><td class="num">0.923</td></tr>
+      <tr class="g3"><td class="frac">1/13</td><td class="pct">7.7%</td><td class="num">÷14</td><td class="num">0.929</td></tr>
+      <tr class="g3"><td class="frac">1/14</td><td class="pct">7.1%</td><td class="num">÷15</td><td class="num">0.933</td></tr>
+      <tr class="g3"><td class="frac">1/15</td><td class="pct">6.7%</td><td class="num">÷16</td><td class="num">0.938</td></tr>
+      <tr class="g3"><td class="frac">1/16</td><td class="pct">6.25%</td><td class="num">÷17</td><td class="num">0.941</td></tr>
+      <tr class="g3"><td class="frac">1/18</td><td class="pct">5.6%</td><td class="num">÷19</td><td class="num">0.947</td></tr>
+      <tr class="g3"><td class="frac">1/20</td><td class="pct">5%</td><td class="num">÷21</td><td class="num">0.952</td></tr>
+      <tr class="g3"><td class="frac">1/25</td><td class="pct">4%</td><td class="num">÷26</td><td class="num">0.960</td></tr>
+    </tbody>
+  </table>
+
+  <div class="hint">点「遮住答案」开始默写；「打乱顺序自测」会重排表格，防止你按位置记。</div>
+
+  <div class="tips">
+    <h3>怎么用</h3>
+    <ol>
+      <li><b>求增长量</b>：r = 1/n 时，直接 <b>现期 ÷ (n+1)</b>。例：涨 25%，今年 120 → 120÷5 = 24</li>
+      <li><b>求基期</b>：r = 1/n 时，<b>现期 × n/(n+1)</b>。例：今年 120，涨 25% → 120×0.8 = 96</li>
+      <li><b>估比例</b>：12.5% 就是 1/8，16.7% 就是 1/6——比按计算器快</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+function el(id){return document.getElementById(id);}
+var tb = el("tb");
+el("toggle").addEventListener("click", function(){
+  var on = tb.classList.toggle("hide");
+  this.textContent = on ? "显示答案" : "遮住答案";
+});
+el("shuffle").addEventListener("click", function(){
+  var body = tb.querySelector("tbody");
+  var rows = Array.prototype.slice.call(body.querySelectorAll("tr"));
+  for (var i = rows.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = rows[i]; rows[i] = rows[j]; rows[j] = t;
+  }
+  rows.forEach(function(r){ body.appendChild(r); });
+  tb.classList.add("hide");
+  el("toggle").textContent = "显示答案";
+});
+</script>
+</body>
+</html>
