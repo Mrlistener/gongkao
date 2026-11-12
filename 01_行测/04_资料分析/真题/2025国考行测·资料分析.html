@@ -13,6 +13,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","M
 h1{font-size:21px;margin:0 0 6px}
 .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
 .bar{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px;color:var(--ink);text-decoration:none;background:var(--card)}
+.pill:hover{border-color:#c9c5bd}
 .bar b{color:var(--ink);font-variant-numeric:tabular-nums}
 .paper{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:16px}
 .paper summary{cursor:pointer;font-weight:600;font-size:14px;padding:6px 4px}
@@ -39,7 +41,14 @@ button.dark{background:var(--ink);color:#fff;border:0}
 <div class="wrap">
   <h1>2025 国考行测 · 资料分析（真题）</h1>
   <p class="sub">题目共 20 道（111–130）。材料在下面的原卷图里，答题卡在下方。<b>建议限时 25 分钟</b>。</p>
-  <div class="bar"><span>已答 <b id="done">0</b> / 20</span><span id="clock">00:00</span></div>
+  <div class="bar"><span>已答 <b id="done">0</b> / <b id="total">20</b></span><span id="clock">00:00</span></div>
+  <div class="bar" style="gap:8px">
+    <a class="pill" href="?part=1">本篇一 111–115</a>
+    <a class="pill" href="?part=2">本篇二 116–120</a>
+    <a class="pill" href="?part=3">本篇三 121–125</a>
+    <a class="pill" href="?part=4">本篇四 126–130</a>
+    <a class="pill" href="./">全部 20 题</a>
+  </div>
 
   <details class="paper" open>
     <summary>点开看原卷（第 20–25 页，含四篇材料）</summary>
@@ -53,7 +62,11 @@ button.dark{background:var(--ink);color:#fff;border:0}
   <section class="res" id="res"></section>
 </div>
 <script>
-var QS = [["111", "A"], ["112", "C"], ["113", "D"], ["114", "A"], ["115", "D"], ["116", "B"], ["117", "A"], ["118", "D"], ["119", "C"], ["120", "D"], ["121", "C"], ["122", "A"], ["123", "B"], ["124", "D"], ["125", "B"], ["126", "A"], ["127", "D"], ["128", "B"], ["129", "C"], ["130", "C"]];
+var QS_ALL = [["111", "A"], ["112", "C"], ["113", "D"], ["114", "A"], ["115", "D"], ["116", "B"], ["117", "A"], ["118", "D"], ["119", "C"], ["120", "D"], ["121", "C"], ["122", "A"], ["123", "B"], ["124", "D"], ["125", "B"], ["126", "A"], ["127", "D"], ["128", "B"], ["129", "C"], ["130", "C"]];
+var PART = {1:[111,115],2:[116,120],3:[121,125],4:[126,130]};
+var m = location.search.match(/part=(\d)/);
+var range = m ? PART[m[1]] : null;
+var QS = range ? QS_ALL.filter(function(q){ var n = parseInt(q[0],10); return n >= range[0] && n <= range[1]; }) : QS_ALL;
 var picked = {};
 var t0 = Date.now();
 function el(id){return document.getElementById(id);}
@@ -95,9 +108,9 @@ el("submit").addEventListener("click",function(){
   });
   var sec=Math.floor((Date.now()-t0)/1000);
   var r=el("res"); r.classList.add("on");
-  r.innerHTML='<div class="big">'+right+' / 20</div><div style="color:#6b6b70;font-size:13px">用时 '+fmt(sec)+'　得分率 '+Math.round(right*5)+'%</div>'+
+  r.innerHTML='<div class="big">'+right+' / '+QS.length+'</div><div style="color:#6b6b70;font-size:13px">用时 '+fmt(sec)+'　得分率 '+Math.round(right*5)+'%</div>'+
     (wrong.length?'<ul class="wronglist">'+wrong.map(function(w){return "<li>"+w+"</li>";}).join("")+'</ul>':'<p>全对。</p>');
-  post({kind:"zlfx",set:"2025国考行测·资料分析",score:right,total:20,sec:sec,wrong:wrong});
+  post({kind:"zlfx",set:"2025国考行测·资料分析" + (range ? "·第" + m[1] + "篇" : ""),score:right,total:QS.length,sec:sec,wrong:wrong});
   window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
 });
 </script>
