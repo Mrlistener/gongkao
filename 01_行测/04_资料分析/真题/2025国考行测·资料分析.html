@@ -35,6 +35,7 @@ button.dark{background:var(--ink);color:#fff;border:0}
 .res.on{display:block}
 .big{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums}
 .wronglist{font-size:14px;margin:8px 0 0;padding-left:18px}
+#qs.locked{opacity:.45;pointer-events:none}
 </style>
 </head>
 <body>
@@ -42,6 +43,10 @@ button.dark{background:var(--ink);color:#fff;border:0}
   <h1>2025 国考行测 · 资料分析（真题）</h1>
   <p class="sub">题目共 20 道（111–130）。材料在下面的原卷图里，答题卡在下方。<b>建议限时 25 分钟</b>。</p>
   <div class="bar"><span>已答 <b id="done">0</b> / <b id="total">20</b></span><span id="clock">00:00</span></div>
+  <div class="bar" style="gap:10px;align-items:center">
+    <button class="dark" id="start">开始计时</button>
+    <span id="starthint" style="font-size:13px;color:#6b6b70">点一下开始，计时从这一刻算起</span>
+  </div>
   <div class="bar" style="gap:8px">
     <a class="pill" href="?part=1">本篇一 111–115</a>
     <a class="pill" href="?part=2">本篇二 116–120</a>
@@ -57,7 +62,7 @@ button.dark{background:var(--ink);color:#fff;border:0}
 
   <div class="tip">做法：先在图里读材料，再在下面点答案。四篇材料分别对应 111–115、116–120、121–125、126–130。</div>
 
-  <main id="qs"></main>
+  <main id="qs" class="locked"></main>
   <button class="dark" id="submit">交卷</button>
   <section class="res" id="res"></section>
 </div>
@@ -68,10 +73,10 @@ var m = location.search.match(/part=(\d)/);
 var range = m ? PART[m[1]] : null;
 var QS = range ? QS_ALL.filter(function(q){ var n = parseInt(q[0],10); return n >= range[0] && n <= range[1]; }) : QS_ALL;
 var picked = {};
-var t0 = Date.now();
+var started = false, t0 = 0;
 function el(id){return document.getElementById(id);}
 function fmt(s){var m=String(Math.floor(s/60)).padStart(2,"0");return m+":"+String(s%60).padStart(2,"0");}
-setInterval(function(){el("clock").textContent=fmt(Math.floor((Date.now()-t0)/1000));},1000);
+setInterval(function(){ if(started) el("clock").textContent=fmt(Math.floor((Date.now()-t0)/1000)); },1000);
 function post(o){try{if(location.protocol==="file:")return;fetch("/api/log",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)}).catch(function(){});}catch(e){}}
 
 var html="";
@@ -86,6 +91,7 @@ el("qs").innerHTML=html;
 
 document.querySelectorAll(".opt").forEach(function(b){
   b.addEventListener("click",function(){
+    if(!started){return;}
     var i=this.getAttribute("data-i"), c=this.getAttribute("data-c");
     picked[i]=c;
     document.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.remove("sel");});
@@ -94,7 +100,14 @@ document.querySelectorAll(".opt").forEach(function(b){
   });
 });
 
+el("start").addEventListener("click",function(){
+  started = true; t0 = Date.now();
+  el("start").style.display = "none";
+  el("starthint").textContent = "计时中——交卷后停止";
+  el("qs").classList.remove("locked");
+});
 el("submit").addEventListener("click",function(){
+  if(!started){return;}
   var right=0, wrong=[];
   QS.forEach(function(q,i){
     var mine=picked[i], ans=q[1];
