@@ -37,8 +37,8 @@ button.dark{background:var(--ink);color:#fff;border:0}
   <p class="sub">原卷三页 + 答题卡。62 题该卷解析缺失，已剔除。</p>
   <div class="bar">
     <span>已答 <b id="done">0</b> / 7</span>
-    <span id="clock">00:00</span>
-    <button class="dark" id="start">开始计时</button>
+    <span id="clock">00:00</span><span id="hint" style="font-size:12.5px;color:#6b6b70">点选项自动开始计时</span>
+    <button class="dark" id="start">开始计时（也可直接点选项）</button>
   </div>
   <div class="tip">做法：先看原卷图里的图形，再在下面点选项。<b>不限时</b>，做不出来就停在那道题，记下题号。</div>
 
@@ -69,7 +69,7 @@ el("qs").innerHTML = html;
 
 document.querySelectorAll(".opt").forEach(function(b){
   b.addEventListener("click", function(){
-    if(!started) return;
+    if(!started){ started = true; t0 = Date.now(); el("start").style.display = "none"; el("hint").textContent = "计时中——交卷后停止"; }
     var i = this.getAttribute("data-i"), c = this.getAttribute("data-c");
     picked[i] = c;
     document.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.remove("sel");});
@@ -84,7 +84,7 @@ el("start").addEventListener("click", function(){
 });
 
 el("submit").addEventListener("click", function(){
-  if(!started) return;
+  if(!started){ started = true; t0 = Date.now(); }
   var right=0, wrong=[];
   QS.forEach(function(q,i){
     var mine = picked[i], ans = q[1];
