@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2025 国考行政执法 · 图形推理 76–85</title>
+<style>
+:root{--ink:#1c1c1e;--muted:#6b6b70;--line:#e6e4df;--bg:#f6f5f2;--card:#fff;--green:#1e7a4b;--green-bg:#eaf6ef;--red:#b3261e;--red-bg:#fdeeed;--amber:#8a5a00;--amber-bg:#fdf4e3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.7}
+.wrap{max-width:860px;margin:0 auto;padding:24px 18px 80px}
+h1{font-size:20px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+.bar{display:flex;gap:18px;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.bar b{color:var(--ink);font-variant-numeric:tabular-nums}
+button{border-radius:10px;padding:10px 18px;font:inherit;font-size:14.5px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+button.dark{background:var(--ink);color:#fff;border:0}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:14px}
+.paper img{width:100%;display:block;border-radius:6px}
+.qs{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.qrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.qrow:last-child{border-bottom:0}
+.qno{width:46px;font-weight:700;font-variant-numeric:tabular-nums}
+.opt{width:42px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-weight:600;user-select:none}
+.opt.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+.opt.ok{background:var(--green-bg);border-color:#bfe3cd;color:var(--green)}
+.opt.no{background:var(--red-bg);border-color:#f0c9c6;color:var(--red)}
+.res{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;display:none}
+.res.on{display:block}
+.big{font-size:30px;font-weight:700}
+.tip{background:var(--amber-bg);color:var(--amber);border-radius:9px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>2025 国考行政执法 · 图形推理（76–85）</h1>
+  <p class="sub">原卷四页 + 答题卡。不限时，做不出来就停在那道，记下题号。</p>
+  <div class="bar">
+    <span>已答 <b id="done">0</b> / 10</span>
+    <span id="clock">00:00</span>
+    <button class="dark" id="start">开始计时（也可直接点选项）</button>
+    <span id="hint" style="font-size:12.5px;color:#6b6b70">点选项自动开始计时</span>
+  </div>
+  <div class="tip">图形题顺序：<b>同→位置，似→样式，异→属性，无→数量</b>。数量按「面→线→点→角→素」数。</div>
+
+  <div class="paper"><img src="2025国考判断图/p-12.png" alt="第12页"></div>
+  <div class="paper"><img src="2025国考判断图/p-13.png" alt="第13页"></div>
+  <div class="paper"><img src="2025国考判断图/p-14.png" alt="第14页"></div>
+  <div class="paper"><img src="2025国考判断图/p-15.png" alt="第15页"></div>
+
+  <div class="qs" id="qs"></div>
+  <button class="dark" id="submit">交卷</button>
+  <section class="res" id="res"></section>
+</div>
+<script>
+var QS = [["76","D"],["77","C"],["78","B"],["79","A"],["80","A"],["81","C"],["82","D"],["83","C"],["84","C"],["85","B"]];
+var picked = {}, started = false, t0 = 0;
+function el(id){return document.getElementById(id);}
+function fmt(s){var m=String(Math.floor(s/60)).padStart(2,"0");return m+":"+String(s%60).padStart(2,"0");}
+setInterval(function(){ if(started) el("clock").textContent = fmt(Math.floor((Date.now()-t0)/1000)); },1000);
+
+var html = "";
+QS.forEach(function(q,i){
+  html += '<div class="qrow"><span class="qno">'+q[0]+'</span>';
+  ["A","B","C","D"].forEach(function(c){
+    html += '<span class="opt" data-i="'+i+'" data-c="'+c+'">'+c+'</span>';
+  });
+  html += '</div>';
+});
+el("qs").innerHTML = html;
+
+document.querySelectorAll(".opt").forEach(function(b){
+  b.addEventListener("click", function(){
+    if(!started){ started = true; t0 = Date.now(); el("start").style.display = "none"; el("hint").textContent = "计时中——交卷后停止"; }
+    var i = this.getAttribute("data-i"), c = this.getAttribute("data-c");
+    picked[i] = c;
+    document.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.remove("sel");});
+    this.classList.add("sel");
+    el("done").textContent = Object.keys(picked).length;
+  });
+});
+
+el("start").addEventListener("click", function(){
+  started = true; t0 = Date.now();
+  this.style.display = "none";
+  el("hint").textContent = "计时中——交卷后停止";
+});
+
+el("submit").addEventListener("click", function(){
+  if(!started){ started = true; t0 = Date.now(); }
+  var right=0, wrong=[];
+  QS.forEach(function(q,i){
+    var mine = picked[i], ans = q[1];
+    document.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){
+      x.classList.remove("sel");
+      if(x.getAttribute("data-c")===ans) x.classList.add("ok");
+      else if(mine && x.getAttribute("data-c")===mine) x.classList.add("no");
+    });
+    if(mine===ans) right++; else wrong.push(q[0]+"（你选"+(mine||"未答")+"，正确"+ans+"）");
+  });
+  var sec = Math.floor((Date.now()-t0)/1000);
+  var r = el("res"); r.classList.add("on");
+  r.innerHTML = '<div class="big">'+right+' / 10</div><div style="color:#6b6b70;font-size:13px">用时 '+fmt(sec)+'</div>'+
+    (wrong.length?'<ul>'+wrong.map(function(w){return "<li>"+w+"</li>";}).join('')+'</ul>':'<p>全对。</p>');
+  post({kind:"attempt", set:"2025国考·图形76-85", score:right, total:10, sec:sec, wrong:wrong});
+  window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"});
+});
+
+function post(o){
+  try{
+    if(location.protocol==="file:") return;
+    fetch("/api/log",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)}).catch(function(){});
+  }catch(e){}
+}
+</script>
+</body>
+</html>
